@@ -2,37 +2,36 @@ version: '3.8'
 
 services:
   dashboard:
+    image: mosello-dashboard:latest
     build:
       context: .
+      dockerfile: Dockerfile
       args:
-        - GEMINI_API_KEY=${GEMINI_API_KEY}
+        GEMINI_API_KEY: ${GEMINI_API_KEY}
     container_name: mosello-dashboard
     restart: unless-stopped
     networks:
       - proxy
     environment:
-      # Database connection
       - DB_HOST=host.docker.internal
       - DB_PORT=5433
       - DB_NAME=checkin
       - DB_USER=admin
       - DB_PASSWORD=${MOSELLO_PG_ADMIN_PASSWORD}
-      # API Keys
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     labels:
-      # Traefik configuration
       - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard.mosello.net.br`)"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.tls=true"
-      - "traefik.http.routers.dashboard.tls.certresolver=le"
-      - "traefik.http.services.dashboard.loadbalancer.server.port=80"
-      # Optional: Redirect HTTP to HTTPS
-      - "traefik.http.middlewares.dashboard-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.dashboard-redirect.redirectscheme.permanent=true"
-      - "traefik.http.routers.dashboard-http.rule=Host(`dashboard.mosello.net.br`)"
-      - "traefik.http.routers.dashboard-http.entrypoints=web"
-      - "traefik.http.routers.dashboard-http.middlewares=dashboard-redirect"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.mosello-dashboard.rule=Host(`dashboard.mosello.net.br`)"
+      - "traefik.http.routers.mosello-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.mosello-dashboard.tls=true"
+      - "traefik.http.routers.mosello-dashboard.tls.certresolver=le"
+      - "traefik.http.services.mosello-dashboard.loadbalancer.server.port=80"
+      - "traefik.http.routers.mosello-dashboard-http.rule=Host(`dashboard.mosello.net.br`)"
+      - "traefik.http.routers.mosello-dashboard-http.entrypoints=web"
+      - "traefik.http.routers.mosello-dashboard-http.middlewares=mosello-dashboard-redirect"
+      - "traefik.http.middlewares.mosello-dashboard-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.mosello-dashboard-redirect.redirectscheme.permanent=true"
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
