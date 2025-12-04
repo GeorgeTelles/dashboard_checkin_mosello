@@ -2,7 +2,10 @@ version: '3.8'
 
 services:
   dashboard:
-    build: .
+    build:
+      context: .
+      args:
+        - GEMINI_API_KEY=${GEMINI_API_KEY}
     container_name: mosello-dashboard
     restart: unless-stopped
     networks:

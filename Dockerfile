@@ -12,6 +12,10 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
+# Build arguments for environment variables
+ARG GEMINI_API_KEY
+ENV GEMINI_API_KEY=$GEMINI_API_KEY
+
 # Build the application
 RUN npm run build
 
