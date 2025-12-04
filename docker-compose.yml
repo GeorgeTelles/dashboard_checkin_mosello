@@ -2,13 +2,17 @@ version: '3.8'
 
 services:
   dashboard:
-    image: mosello-dashboard:latest
     build:
       context: .
       dockerfile: Dockerfile
       args:
         GEMINI_API_KEY: ${GEMINI_API_KEY}
     container_name: mosello-dashboard
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: unless-stopped
     networks:
       - proxy
