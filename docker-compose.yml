@@ -1,31 +1,21 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  mosello-dashboard:
+  user-dashboard:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        GEMINI_API_KEY: ${GEMINI_API_KEY}
-    container_name: mosello-dashboard
+    container_name: user-dashboard
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.user-dashboard.rule=Host(`dashboard.mosello.net.br`)
+      - traefik.http.routers.user-dashboard.entrypoints=web,websecure
+      - traefik.http.routers.user-dashboard.tls=true
+      - traefik.http.routers.user-dashboard.tls.certresolver=le
+      - traefik.http.services.user-dashboard.loadbalancer.server.port=80
     networks:
       - proxy
-    environment:
-      - DB_HOST=host.docker.internal
-      - DB_PORT=5433
-      - DB_NAME=checkin
-      - DB_USER=admin
-      - DB_PASSWORD=${MOSELLO_PG_ADMIN_PASSWORD}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.user-dashboard.rule=Host(`dashboard.mosello.net.br`)"
-      - "traefik.http.routers.user-dashboard.entrypoints=web,websecure"
-      - "traefik.http.routers.user-dashboard.tls=true"
-      - "traefik.http.routers.user-dashboard.tls.certresolver=le"
-      - "traefik.http.services.user-dashboard.loadbalancer.server.port=80"
 
 networks:
   proxy:
