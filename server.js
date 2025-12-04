@@ -21,10 +21,28 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-// Testar conexão
+// Testar conexão no startup
 pool.on('error', (err) => {
   console.error('Erro inesperado no pool de conexões:', err);
 });
+
+// Conectar ao database no startup
+(async () => {
+  try {
+    const client = await pool.connect();
+    console.log('✅ Conexão bem-sucedida ao PostgreSQL!');
+    client.release();
+  } catch (err) {
+    console.error('❌ Erro ao conectar ao PostgreSQL:', err.message);
+    console.error('Detalhes:', {
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD ? '***' : 'vazia'
+    });
+  }
+})();
 
 // Rota de teste
 app.get('/api/test-connection', async (req, res) => {
