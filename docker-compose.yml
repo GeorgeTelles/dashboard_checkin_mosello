@@ -8,11 +8,6 @@ services:
       args:
         GEMINI_API_KEY: ${GEMINI_API_KEY}
     container_name: mosello-dashboard
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
     restart: unless-stopped
     networks:
       - proxy
@@ -31,12 +26,6 @@ services:
       - "traefik.http.routers.user-dashboard.tls=true"
       - "traefik.http.routers.user-dashboard.tls.certresolver=le"
       - "traefik.http.services.user-dashboard.loadbalancer.server.port=80"
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
 
 networks:
   proxy:
