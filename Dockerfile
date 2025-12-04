@@ -1,42 +1,34 @@
-FROM node:20-alpine AS build
+# Build stage
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copiar package.json
+# Copy package files
 COPY package*.json ./
 
-# Instalar todas as dependências (inclui devDependencies para build)
-RUN npm install
+# Install dependencies
+RUN npm ci
 
-# Copiar código fonte
+# Copy source code
 COPY . .
 
-# Build do frontend Vite
+# Build the application
 RUN npm run build
 
-# Estágio de produção - roda Node.js com Express + Frontend estático
-FROM node:20-alpine
+# Production stage
+FROM nginx:alpine
 
-WORKDIR /app
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copiar package.json
-COPY package*.json ./
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Instalar apenas dependências de produção
-RUN npm install --only=production
-
-# Copiar código do servidor
-COPY server.js .
-
-# Copiar frontend buildado do estágio anterior
-COPY --from=build /app/dist ./dist
-
-# Expor portas
-EXPOSE 3001
+# Expose port 80
+EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/api/test-connection', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})" || exit 1
+  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
 
-# Rodar servidor
-CMD ["node", "server.js"]
+CMD ["nginx", "-g", "daemon off;"]

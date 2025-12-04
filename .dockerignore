@@ -3,6 +3,13 @@ npm-debug.log
 dist
 .git
 .gitignore
-README.md
 .env
 .env.local
+.env.*.local
+README.md
+*.md
+.DS_Store
+.vscode
+.idea
+coverage
+.cache
