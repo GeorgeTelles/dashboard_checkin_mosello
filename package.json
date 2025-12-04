@@ -1,7 +1,7 @@
 {
   "name": "mosello-advocacia---painel-de-check-in",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "server": "node server.js",
     "dev:server": "node --watch server.js",
-    "start": "npm run build && npm run server"
+    "start": "node server.js"
   },
   "dependencies": {
     "react-dom": "^19.2.1",
