@@ -2,9 +2,9 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copiar package.json e instalar dependências
+# Copiar package.json e instalar todas as dependências
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm ci --save-dev @types/node @vitejs/plugin-react typescript ~5.8.2 vite
+RUN npm install
 
 # Copiar código fonte
 COPY . .
