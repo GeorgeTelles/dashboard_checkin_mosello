@@ -26,12 +26,9 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - traefik.http.routers.dashboard.rule=Host(`dashboard.mosello.net.br`)
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.mosello.net.br`) || PathPrefix(`/api/`)
       - traefik.http.routers.dashboard.entrypoints=web
-      - traefik.http.routers.dashboard-secure.rule=Host(`dashboard.mosello.net.br`)
-      - traefik.http.routers.dashboard-secure.entrypoints=websecure
-      - traefik.http.routers.dashboard-secure.tls=true
-      - traefik.http.routers.dashboard-secure.tls.certresolver=le
+      - traefik.http.routers.dashboard.service=dashboard
       - traefik.http.services.dashboard.loadbalancer.server.port=3001
     networks:
       - proxy
