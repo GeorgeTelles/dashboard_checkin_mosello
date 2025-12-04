@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  user-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: user-dashboard:latest
+    container_name: user-dashboard
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_proxy
+      - traefik.http.routers.user-dashboard.rule=Host(`dashboard.mosello.net.br`)
+      - traefik.http.routers.user-dashboard.entrypoints=web,websecure
+      - traefik.http.routers.user-dashboard.tls=true
+      - traefik.http.services.user-dashboard.loadbalancer.server.port=80
+    networks:
+      - traefik_proxy
+
+networks:
+  traefik_proxy:
+    external: true
