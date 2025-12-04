@@ -1,0 +1,5 @@
+{
+  "name": "Mosello Advocacia - Painel de Check-In",
+  "description": "Um painel de controle para monitorar em tempo real as confirmações de presença dos advogados para audiências agendadas, com visualizações de dados e listas de processos.",
+  "requestFramePermissions": []
+}
