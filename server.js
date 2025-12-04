@@ -44,6 +44,18 @@ pool.on('error', (err) => {
   }
 })();
 
+// Middleware de logging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// Middleware de erro
+app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${req.method} ${req.path}:`, err.message);
+  res.status(500).json({ error: err.message });
+});
+
 // Rota de teste
 app.get('/api/test-connection', async (req, res) => {
   try {
@@ -57,12 +69,15 @@ app.get('/api/test-connection', async (req, res) => {
 // AUDIÊNCIAS - Buscar todas
 app.get('/api/hearings', async (req, res) => {
   try {
+    console.log('📋 Buscando todas as audiências...');
     const result = await pool.query(`
       SELECT * FROM audiencias
       ORDER BY data_evento DESC, hora_evento DESC
     `);
+    console.log(`✅ Retornando ${result.rows.length} audiências`);
     res.json(result.rows);
   } catch (error) {
+    console.error('❌ Erro ao buscar audiências:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -199,6 +214,7 @@ app.get('/api/processes', async (req, res) => {
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`Conectando ao PostgreSQL em ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
+  console.log(`📡 Aguardando requisições em http://localhost:${PORT}`);
+  console.log(`🌐 Traefik deve rotear: https://dashboard.mosello.net.br`);
 });
