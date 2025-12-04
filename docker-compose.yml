@@ -26,16 +26,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.mosello-dashboard.rule=Host(`dashboard.mosello.net.br`)"
-      - "traefik.http.routers.mosello-dashboard.entrypoints=websecure"
-      - "traefik.http.routers.mosello-dashboard.tls=true"
-      - "traefik.http.routers.mosello-dashboard.tls.certresolver=le"
-      - "traefik.http.services.mosello-dashboard.loadbalancer.server.port=80"
-      - "traefik.http.routers.mosello-dashboard-http.rule=Host(`dashboard.mosello.net.br`)"
-      - "traefik.http.routers.mosello-dashboard-http.entrypoints=web"
-      - "traefik.http.routers.mosello-dashboard-http.middlewares=mosello-dashboard-redirect"
-      - "traefik.http.middlewares.mosello-dashboard-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.mosello-dashboard-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.user-dashboard.rule=Host(`dashboard.mosello.net.br`)"
+      - "traefik.http.routers.user-dashboard.entrypoints=web,websecure"
+      - "traefik.http.routers.user-dashboard.tls=true"
+      - "traefik.http.routers.user-dashboard.tls.certresolver=le"
+      - "traefik.http.services.user-dashboard.loadbalancer.server.port=80"
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
