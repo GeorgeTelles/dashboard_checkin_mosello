@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: user-dashboard:latest
     container_name: user-dashboard
     restart: unless-stopped
     labels:
