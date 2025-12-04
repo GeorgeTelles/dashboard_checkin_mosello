@@ -1,55 +1,34 @@
 
 import { CheckInStatus, type Lawyer, type Hearing, type Process } from '../types';
 
-export const lawyers: Lawyer[] = [
-  { id: '1', name: 'Dr. Carlos Silva', avatarUrl: 'https://i.pravatar.cc/150?u=carlos' },
-  { id: '2', name: 'Dra. Ana Paula', avatarUrl: 'https://i.pravatar.cc/150?u=ana' },
-  { id: '3', name: 'Dr. Roberto Santos', avatarUrl: 'https://i.pravatar.cc/150?u=roberto' },
-  { id: '4', name: 'Dra. Mariana Costa', avatarUrl: 'https://i.pravatar.cc/150?u=mariana' },
-  { id: '5', name: 'Dr. Fernando Lima', avatarUrl: 'https://i.pravatar.cc/150?u=fernando' },
-  { id: '6', name: 'Dra. Juliana Alves', avatarUrl: 'https://i.pravatar.cc/150?u=juliana' },
-  { id: '7', name: 'Dr. Paulo Mendes', avatarUrl: 'https://i.pravatar.cc/150?u=paulo' },
-  { id: '8', name: 'Dra. Beatriz Rodrigues', avatarUrl: 'https://i.pravatar.cc/150?u=beatriz' },
-];
+// ⚠️ AVISO: Estes dados são fallback/padrão. 
+// Os dados reais vêm da API (tabela 'audiencias' no PostgreSQL)
+
+export const lawyers: Lawyer[] = [];
 
 export const checkInStats = {
-  done: 127,
-  pending: 18,
-  late: 5,
-  confirmationRate: 96.2,
-  rateChange: 3.1,
+  total: 0,
+  presencial: 0,
+  videoconferencia: 0,
+  whatsapp: 0,
+  ta_sent: 0,
+  ta_not_sent: 0,
 };
 
-export const weeklyChartData = [
-  { day: 'Seg', Feito: 15, Pendente: 3, Atrasado: 1 },
-  { day: 'Ter', Feito: 12, Pendente: 5, Atrasado: 2 },
-  { day: 'Qua', Feito: 18, Pendente: 4, Atrasado: 1 },
-  { day: 'Qui', Feito: 13, Pendente: 5, Atrasado: 2 },
-  { day: 'Sex', Feito: 20, Pendente: 2, Atrasado: 0 },
-  { day: 'Sab', Feito: 8, Pendente: 1, Atrasado: 0 },
-];
+export const weeklyChartData: any[] = [];
 
-export const evolutionChartData = [
-  { month: 'Jul', total: 220 },
-  { month: 'Ago', total: 250 },
-  { month: 'Set', total: 310 },
-  { month: 'Out', total: 290 },
-  { month: 'Nov', total: 340 },
-  { month: 'Dez', total: 380 },
-];
+export const evolutionChartData: any[] = [];
 
 export const audienceSummary = {
-  today: 32,
-  confirmed: 27,
-  waiting: 3,
-  attention: 2,
+  total_today: 0,
+  presencial: 0,
+  videoconferencia: 0,
+  whatsapp: 0,
+  encontrado: 0,
+  nao_encontrado: 0,
 };
 
-export const happeningNowHearings: Hearing[] = [
-  { id: 'h1', processNumber: '0001234-56.2024.8.26.0100', lawyer: lawyers[0], time: '09:30', location: 'Fórum Central - Sala 201', status: 'Em andamento', confirmation: 'Confirmado' },
-  { id: 'h2', processNumber: '0002345-67.2024.8.26.0100', lawyer: lawyers[1], time: '10:00', location: 'Fórum Central - Sala 305', status: 'Aguardando início', confirmation: 'Confirmado' },
-  { id: 'h3', processNumber: '0003456-78.2024.8.26.0100', lawyer: lawyers[2], time: '10:30', location: 'Fórum da Barra Funda - Sala 102', status: 'Próximo', confirmation: 'Pendente' },
-];
+export const happeningNowHearings: Hearing[] = [];
 
 export const processList: Process[] = [
     { id: 'p1', processNumber: '0001234-56.2024.8.26.0100', hearingDate: '03 de dez. de 2025', hearingTime: '09:30', mainLawyer: lawyers[0], checkInStatus: CheckInStatus.Feito, confirmationTime: '08:45' },

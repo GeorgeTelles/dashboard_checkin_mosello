@@ -1,19 +1,36 @@
 version: "3.8"
+
 services:
-  user-dashboard:
+  dashboard:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: user-dashboard
+    container_name: mosello-dashboard
     restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=84.46.246.201
+      - DB_PORT=5433
+      - DB_NAME=checkin
+      - DB_USER=admin
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      - PORT=3001
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/test-connection', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - traefik.http.routers.user-dashboard.rule=Host(`dashboard.mosello.net.br`)
-      - traefik.http.routers.user-dashboard.entrypoints=web,websecure
-      - traefik.http.routers.user-dashboard.tls=true
-      - traefik.http.routers.user-dashboard.tls.certresolver=le
-      - traefik.http.services.user-dashboard.loadbalancer.server.port=80
+      - traefik.http.routers.dashboard.rule=Host(`dashboard.mosello.net.br`)
+      - traefik.http.routers.dashboard.entrypoints=web,websecure
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.tls.certresolver=le
+      - traefik.http.services.dashboard.loadbalancer.server.port=3001
     networks:
       - proxy
 

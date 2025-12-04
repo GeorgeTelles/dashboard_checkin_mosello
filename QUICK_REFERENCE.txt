@@ -1,0 +1,89 @@
+═══════════════════════════════════════════════════════════════════════════════
+                     GUIA RÁPIDO - CONEXÃO BANCO DE DADOS
+═══════════════════════════════════════════════════════════════════════════════
+
+CREDENCIAIS:
+  Host: 84.46.246.201
+  Porta: 5433
+  Database: checkin
+  Usuário: admin
+
+ARQUIVOS PRINCIPAIS:
+  • .env - suas credenciais ✅ (já pronto)
+  • server.js - API backend
+  • services/dbService.ts - funções para dados
+  • database_schema.sql - criar tabelas
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: INSTALAR
+─────────────────────────────────────────────────────────────────────────────
+npm install express pg cors dotenv
+
+PASSO 2: CRIAR TABELAS
+─────────────────────────────────────────────────────────────────────────────
+pgAdmin → Conectar em 84.46.246.201:5433 → Query Tool → 
+Copiar database_schema.sql → F5 para executar
+
+PASSO 3: TESTAR
+─────────────────────────────────────────────────────────────────────────────
+node test-db.js
+
+(deve aparecer: ✅ Conexão bem-sucedida!)
+
+PASSO 4: RODAR
+─────────────────────────────────────────────────────────────────────────────
+Terminal 1:
+  npm run dev:server
+
+Terminal 2:
+  npm run dev
+
+Abra: http://localhost:5173
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ENDPOINTS (localhost:3001/api):
+
+  /test-connection     → Testa conexão
+  /lawyers             → Advogados
+  /check-ins          → Estatísticas
+  /hearings           → Audiências
+  /processes          → Processos
+  /weekly-data        → Semanal
+  /evolution-data     → Mensal
+  /audience-summary   → Resumo
+
+═══════════════════════════════════════════════════════════════════════════════
+
+USAR NOS COMPONENTES:
+
+import { fetchLawyers } from '../services/dbService';
+
+useEffect(() => {
+  fetchLawyers().then(setLawyers);
+}, []);
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMAS?
+
+Executar: node test-db.js
+
+Erros comuns:
+  • ECONNREFUSED → Verificar host/porta/.env
+  • password failed → Verificar usuário/senha
+  • database not found → Criar database "checkin"
+  • Table not found → Executar database_schema.sql
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DOCUMENTAÇÃO:
+
+COMECE_AQUI.md ............ Rápido e simples
+CHECKLIST.md ............. Passo a passo
+ARQUITETURA.md ........... Como funciona
+DATABASE_SETUP.md ........ Detalhado
+EXEMPLO_MIGRACAO.md ...... Adaptar componentes
+
+═══════════════════════════════════════════════════════════════════════════════
