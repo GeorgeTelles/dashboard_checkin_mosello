@@ -25,7 +25,7 @@ services:
       - "traefik.http.routers.dashboard.rule=Host(`dashboard.mosello.net.br`)"
       - "traefik.http.routers.dashboard.entrypoints=websecure"
       - "traefik.http.routers.dashboard.tls=true"
-      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.tls.certresolver=le"
       - "traefik.http.services.dashboard.loadbalancer.server.port=80"
       # Optional: Redirect HTTP to HTTPS
       - "traefik.http.middlewares.dashboard-redirect.redirectscheme.scheme=https"
