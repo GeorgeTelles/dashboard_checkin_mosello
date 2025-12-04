@@ -21,19 +21,19 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ icon, title, value, total, 
     const percentage = total > 0 ? (value / total) * 100 : 0;
 
     return (
-        <div className="bg-white p-6 rounded-xl border border-slate-200">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                     <div className="p-1.5 rounded-full bg-slate-100">{icon}</div>
-                     <span className="ml-2 text-gray-500">{title}</span>
+                     <div className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-700">{icon}</div>
+                     <span className="ml-2 text-gray-500 dark:text-slate-400">{title}</span>
                 </div>
-                <span className="font-bold text-xl text-gray-800">{value}</span>
+                <span className="font-bold text-xl text-gray-800 dark:text-slate-100">{value}</span>
             </div>
             <div className="mt-4">
-                <div className="w-full bg-slate-200 rounded-full h-1.5">
+                <div className="w-full bg-slate-200 rounded-full h-1.5 dark:bg-slate-700">
                     <div className={`${color} h-1.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">{label}</p>
+                <p className="text-xs text-gray-500 mt-2 dark:text-slate-400">{label}</p>
             </div>
         </div>
     );
@@ -42,9 +42,9 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ icon, title, value, total, 
 const AudienceSummary = () => {
     return (
         <div>
-            <h2 className="text-xl font-bold text-gray-800">Resumo de Audiências</h2>
-            <p className="text-gray-500 mt-1">Status das audiências e confirmações do dia</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Resumo de Audiências</h2>
+            <p className="text-gray-500 mt-1 dark:text-slate-400">Status das audiências e confirmações do dia</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
                 <ProgressCard
                     icon={<CalendarIcon />}
                     title="Audiências Hoje"

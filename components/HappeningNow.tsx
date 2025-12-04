@@ -17,15 +17,15 @@ const confirmationColors: { [key in Hearing['confirmation']]: string } = {
 };
 
 const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (
-    <div className="bg-white p-5 rounded-xl border border-slate-200">
+    <div className="bg-white p-5 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
         <div className="flex justify-between items-start">
             <div>
-                <p className="text-sm text-gray-500">{`Processo ${hearing.processNumber}`}</p>
+                <p className="text-sm text-gray-500 dark:text-slate-400">{`Processo ${hearing.processNumber}`}</p>
                 <div className="flex items-center mt-2">
                     <img src={hearing.lawyer.avatarUrl} alt={hearing.lawyer.name} className="w-8 h-8 rounded-full mr-3" />
-                    <p className="font-semibold text-gray-800">{hearing.lawyer.name}</p>
+                    <p className="font-semibold text-gray-800 dark:text-slate-200">{hearing.lawyer.name}</p>
                 </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center text-sm text-gray-500 mt-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center text-sm text-gray-500 dark:text-slate-400 mt-3">
                     <div className="flex items-center mb-1 sm:mb-0 sm:mr-6"><ClockIcon /> {hearing.time}</div>
                     <div className="flex items-center"><LocationIcon /> {hearing.location}</div>
                 </div>
@@ -36,7 +36,7 @@ const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (
                 </span>
             </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-slate-200">
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
              <div className="flex items-center">
                 <span className={`inline-block w-2.5 h-2.5 mr-2 rounded-full ${statusColors[hearing.status].split(' ')[0]}`}></span>
                 <span className={`text-sm font-medium ${statusColors[hearing.status].split(' ')[1]}`}>{hearing.status}</span>
@@ -48,11 +48,11 @@ const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (
 
 const HappeningNow = () => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-slate-200">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-800">Audiências Acontecendo Agora</h2>
-                    <p className="text-gray-500 mt-1">Monitoramento em tempo real das audiências de hoje</p>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Audiências Acontecendo Agora</h2>
+                    <p className="text-gray-500 mt-1 dark:text-slate-400">Monitoramento em tempo real das audiências de hoje</p>
                 </div>
                  <div className="flex items-center">
                     <span className="relative flex h-3 w-3">

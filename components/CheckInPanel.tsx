@@ -17,14 +17,14 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgColor }) => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-slate-200 flex items-center">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 flex items-center dark:bg-slate-800 dark:border-slate-700">
             <div className={`rounded-full p-3 ${iconBgColor}`}>
                 {icon}
             </div>
             <div className="ml-4">
-                <p className="text-sm text-gray-500">{title}</p>
+                <p className="text-sm text-gray-500 dark:text-slate-400">{title}</p>
                 <div className="flex items-baseline space-x-2">
-                    <p className="text-2xl font-bold text-gray-800">{value}</p>
+                    <p className="text-2xl font-bold text-gray-800 dark:text-slate-100">{value}</p>
                     {change && (
                         <p className={`text-sm font-semibold ${change > 0 ? 'text-green-500' : 'text-red-500'}`}>
                             {change > 0 ? '+' : ''}{change}%
@@ -39,9 +39,9 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
 const CheckInPanel = () => {
     return (
         <div>
-            <h1 className="text-2xl font-bold text-gray-800">Painel de Check-In</h1>
-            <p className="text-gray-500 mt-1">Monitoramento em tempo real das confirmações de presença dos advogados</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Painel de Check-In</h1>
+            <p className="text-gray-500 mt-1 dark:text-slate-400">Monitoramento em tempo real das confirmações de presença dos advogados</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
                 <StatCard 
                     icon={<CheckIcon />} 
                     title="Check-in Feito" 

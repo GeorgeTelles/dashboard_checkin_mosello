@@ -5,9 +5,9 @@ import { weeklyChartData } from '../data/mockData';
 
 const WeeklyStatusChart = () => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-slate-200 h-96">
-            <h3 className="font-bold text-lg text-gray-800">Status de Check-in Semanal</h3>
-            <p className="text-sm text-gray-500">Acompanhamento diário das confirmações</p>
+        <div className="bg-white p-6 rounded-xl border border-slate-200 h-96 dark:bg-slate-800 dark:border-slate-700">
+            <h3 className="font-bold text-lg text-gray-800 dark:text-slate-100">Status de Check-in Semanal</h3>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Acompanhamento diário das confirmações</p>
             <div className="mt-4 h-full w-full pb-8">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
