@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  dashboard:
+  mosello-dashboard:
     build:
       context: .
       dockerfile: Dockerfile
