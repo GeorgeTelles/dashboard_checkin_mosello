@@ -87,6 +87,14 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                         location: item.local_evento
                     };
                 }).filter((p: Process) => p.id);
+        
+        // Ordena pela hora da audiência (mais cedo primeiro)
+        formattedData.sort((a, b) => {
+            if (a.hearingTime === 'N/A') return 1;
+            if (b.hearingTime === 'N/A') return -1;
+            return a.hearingTime.localeCompare(b.hearingTime);
+        });
+        
         setProcessList(formattedData);
     }, [audiences]);
 
@@ -95,7 +103,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
             <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col h-full">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Processos (Banco de Dados)</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Processos</h2>
                         <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de check-in dos advogados</p>
                     </div>
                     <div className="flex items-center space-x-3">
