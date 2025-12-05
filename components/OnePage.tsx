@@ -3,14 +3,16 @@ import React from 'react';
 import ProcessList from './ProcessList';
 import CheckInPanel from './CheckInPanel';
 import AudienceSummary from './AudienceSummary';
+import DatabaseProcessList from './DatabaseProcessList';
 import HappeningNow from './HappeningNow';
 
 const OnePage = () => {
   return (
     <div className="flex flex-col lg:flex-row h-full w-full gap-6 p-4 md:p-6 overflow-hidden">
       {/* Main Content: Process List */}
-      <div className="lg:w-2/3 h-full flex flex-col min-h-0">
+      <div className="lg:w-2/3 h-full flex flex-col min-h-0 gap-6">
         <ProcessList />
+        <DatabaseProcessList />
       </div>
 
       {/* Sidebar content: Cards */}

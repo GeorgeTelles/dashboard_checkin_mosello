@@ -26,6 +26,7 @@ export interface Process {
   processNumber: string;
   hearingDate: string;
   hearingTime: string;
+  location?: string;
   mainLawyer: Lawyer;
   checkInStatus: CheckInStatus;
   confirmationTime: string | null;
