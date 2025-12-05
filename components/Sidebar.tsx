@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, currentPage, setCu
                 </div>
                 <div className="flex-1 flex flex-col overflow-y-auto">
                     <nav className="flex-1 px-4 py-4 space-y-2">
-                        <a 
+                        {/* <a 
                             href="#" 
                             onClick={(e) => { 
                                 e.preventDefault(); 
@@ -65,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, currentPage, setCu
                         >
                             <DashboardIcon />
                             <span className="ml-3">Dashboard</span>
-                        </a>
+                        </a> */}
                         <a 
                             href="#" 
                             onClick={(e) => { 
