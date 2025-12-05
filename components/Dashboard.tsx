@@ -5,7 +5,7 @@ import WeeklyStatusChart from './WeeklyStatusChart';
 import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
-import ProcessList from './ProcessList';
+import DatabaseProcessList from './DatabaseProcessList';
 import { Audience } from '../types';
 
 const Dashboard = () => {
@@ -56,7 +56,7 @@ const Dashboard = () => {
 
             <AudienceSummary />
             <HappeningNow />
-            <ProcessList />
+            <DatabaseProcessList />
         </div>
     );
 };
