@@ -52,10 +52,10 @@ const OnePage = () => {
       <div className="lg:w-1/3 h-full flex flex-col gap-6 overflow-y-auto">
         {/* Remove main title from these components for a cleaner look in this view */}
         <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-            <CheckInPanel />
+            <CheckInPanel audiences={audiences} />
         </div>
         <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-            <AudienceSummary />
+            <AudienceSummary audiences={audiences} />
         </div>
         <HappeningNow />
       </div>
