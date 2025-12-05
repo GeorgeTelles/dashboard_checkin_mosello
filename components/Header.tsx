@@ -39,7 +39,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, theme, setTheme, onLogout 
                  </button>
             </div>
             <div className="flex items-center space-x-3 md:space-x-6">
-                <div className="relative">
+                {/* Aba de busca - comentada */}
+                {/* <div className="relative">
                     <input 
                         type="text" 
                         placeholder="Buscar..." 
@@ -48,15 +49,16 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, theme, setTheme, onLogout 
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <SearchIcon />
                     </div>
-                </div>
+                </div> */}
                 
-                <div className="relative">
+                {/* Foto do perfil e botão do menu - comentado */}
+                {/* <div className="relative">
                     <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center focus:outline-none p-1 rounded-full">
                         <img className="h-9 w-9 rounded-full object-cover" src="https://i.pravatar.cc/150?u=admin-2" alt="User avatar" />
                         <ChevronDownIcon />
                     </button>
                     {isDropdownOpen && <UserDropdown theme={theme} setTheme={setTheme} onClose={() => setIsDropdownOpen(false)} onLogout={onLogout} />}
-                </div>
+                </div> */}
             </div>
         </header>
     );
