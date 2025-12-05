@@ -15,6 +15,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchAudiences = async () => {
             try {
+                console.log('🔄 Atualizando dados...', new Date().toLocaleTimeString());
                                 // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
                 const response = await fetch('/api/audiencias');
                 if (!response.ok) {
@@ -22,6 +23,7 @@ const Dashboard = () => {
                 }
                 const data = await response.json();
                 setAudiences(data);
+                console.log('✅ Dados atualizados com sucesso!', data.length, 'registros');
             } catch (e) {
                 console.error("Falha ao buscar audiências:", e);
                 setError('Não foi possível carregar os dados da audiência.');
@@ -63,7 +65,7 @@ const Dashboard = () => {
 
             <AudienceSummary />
             <HappeningNow />
-            <DatabaseProcessList />
+            <DatabaseProcessList audiences={audiences} />
         </div>
     );
 };

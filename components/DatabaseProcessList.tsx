@@ -34,16 +34,17 @@ const SortIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w
 const MoreIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>);
 
 
-const DatabaseProcessList = () => {
+interface DatabaseProcessListProps {
+    audiences: any[];
+}
+
+const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
 
     useEffect(() => {
-        fetch('https://dashboard.mosello.net.br/api/audiencias')
-            .then(response => response.json())
-            .then(data => {
-                console.log('Dados recebidos da API:', data);
-                const formattedData: Process[] = data.map((item: any) => {
+        console.log('🔄 DatabaseProcessList recebeu novos dados:', audiences.length, 'registros');
+        const formattedData: Process[] = audiences.map((item: any) => {
                     // Cria o advogado dinamicamente a partir dos dados do banco
                     const lawyerName = item.encarregado_nome || 'Não atribuído';
                     const lawyer = {
@@ -80,10 +81,8 @@ const DatabaseProcessList = () => {
                         location: item.local_evento
                     };
                 }).filter((p: Process) => p.id);
-                setProcessList(formattedData);
-            })
-            .catch(error => console.error('Erro ao buscar dados da API:', error));
-    }, []);
+        setProcessList(formattedData);
+    }, [audiences]);
 
     return (
         <>
