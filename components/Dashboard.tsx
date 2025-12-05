@@ -1,9 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
 import CheckInPanel from './CheckInPanel';
-// ... (imports existentes)
+import WeeklyStatusChart from './WeeklyStatusChart';
+import AudienceEvolutionChart from './AudienceEvolutionChart';
+import AudienceSummary from './AudienceSummary';
+import HappeningNow from './HappeningNow';
 import ProcessList from './ProcessList';
-import { Audience } from '../types'; // Supondo que você tenha um arquivo de tipos
+import { Audience } from '../types';
 
 const Dashboard = () => {
     const [audiences, setAudiences] = useState<Audience[]>([]);
