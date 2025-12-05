@@ -1,7 +1,5 @@
-
 import React from 'react';
-import { processList } from '../data/mockData';
-import { CheckInStatus } from '../types';
+import { Process, CheckInStatus } from '../types';
 import ReminderModal from './ReminderModal';
 
 const StatusBadge: React.FC<{ status: CheckInStatus }> = ({ status }) => {
@@ -19,7 +17,7 @@ const SortIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w
 const MoreIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>);
 
 
-const ProcessList = () => {
+const ProcessList: React.FC<{ processes: Process[] }> = ({ processes }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
 
     return (
@@ -47,7 +45,7 @@ const ProcessList = () => {
                 <div className="flex-1 overflow-y-auto">
                     {/* Mobile Card View */}
                     <div className="md:hidden grid grid-cols-1 gap-4">
-                        {processList.map((processItem) => (
+                        {processes.map((processItem) => (
                             <div key={processItem.id} className="bg-white p-4 rounded-lg border border-slate-200 space-y-4 dark:bg-slate-700/50 dark:border-slate-700">
                                 <div className="flex justify-between items-start">
                                     <span className="font-medium text-gray-900 text-sm break-all pr-2 dark:text-slate-100">{processItem.processNumber}</span>
@@ -72,6 +70,10 @@ const ProcessList = () => {
                                         <p className="mt-1">{processItem.confirmationTime || '-'}</p>
                                     </div>
                                 </div>
+                                <div className="border-t border-slate-100 pt-3 text-sm text-gray-500 dark:border-slate-700 dark:text-slate-400">
+                                     <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Local</p>
+                                     <p className="mt-1">{processItem.location}</p>
+                                </div>
                                 <div className="flex justify-end pt-2">
                                     <button><MoreIcon /></button>
                                 </div>
@@ -87,6 +89,7 @@ const ProcessList = () => {
                                     <th scope="col" className="px-6 py-3">Processo</th>
                                     <th scope="col" className="px-6 py-3">Data da Audiência</th>
                                     <th scope="col" className="px-6 py-3">Hora da Audiência</th>
+                                    <th scope="col" className="px-6 py-3">Local</th>
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
                                     <th scope="col" className="px-6 py-3">Status Check-in</th>
                                     <th scope="col" className="px-6 py-3">Confirmação</th>
@@ -94,15 +97,19 @@ const ProcessList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {processList.map((processItem) => (
+                                {processes.map((processItem) => (
                                     <tr key={processItem.id} className="bg-white border-b hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-600">
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{processItem.processNumber}</td>
                                         <td className="px-6 py-4">{processItem.hearingDate}</td>
                                         <td className="px-6 py-4">{processItem.hearingTime}</td>
+                                        <td className="px-6 py-4">{processItem.location}</td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center">
-                                                <img src={processItem.mainLawyer.avatarUrl} alt={processItem.mainLawyer.name} className="w-8 h-8 rounded-full mr-3" />
-                                                <span>{processItem.mainLawyer.name}</span>
+                                                <img className="w-8 h-8 rounded-full mr-3" src={processItem.mainLawyer.avatarUrl} alt={processItem.mainLawyer.name} />
+                                                <div>
+                                                    <div className="font-semibold text-gray-800 dark:text-slate-200">{processItem.mainLawyer.name}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-slate-400">Encarregado</div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -119,12 +126,7 @@ const ProcessList = () => {
                     </div>
                 </div>
             </div>
-            {isReminderModalOpen && (
-                <ReminderModal 
-                    onClose={() => setIsReminderModalOpen(false)}
-                    processes={processList}
-                />
-            )}
+            <ReminderModal isOpen={isReminderModalOpen} onClose={() => setIsReminderModalOpen(false)} />
         </>
     );
 };

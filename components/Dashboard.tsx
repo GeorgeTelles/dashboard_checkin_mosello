@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import CheckInPanel from './CheckInPanel';
 import WeeklyStatusChart from './WeeklyStatusChart';
@@ -6,22 +5,38 @@ import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
 import ProcessList from './ProcessList';
-import { Audience } from '../types';
+import { Audience, Process, CheckInStatus } from '../types';
 
 const Dashboard = () => {
-    const [audiences, setAudiences] = useState<Audience[]>([]);
+    const [processes, setProcesses] = useState<Process[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchAudiences = async () => {
             try {
-                                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
                 const response = await fetch('/api/audiencias');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
-                setAudiences(data);
+                const data: Audience[] = await response.json();
+
+                // Mapeia os dados da API para o formato do Process
+                const formattedProcesses: Process[] = data.map(audience => ({
+                    id: audience.checkin_id,
+                    processNumber: audience.processo,
+                    hearingDate: new Date(audience.data_evento).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
+                    hearingTime: audience.hora_evento.substring(0, 5),
+                    mainLawyer: {
+                        name: audience.encarregado_nome,
+                        // Gerando avatar aleatório para manter o layout
+                        avatarUrl: `https://i.pravatar.cc/150?u=${audience.encarregado_nome}`
+                    },
+                    checkInStatus: audience.status as CheckInStatus, // Assumindo que o status da API corresponde
+                    confirmationTime: audience.hora_checkin ? audience.hora_checkin.substring(0, 5) : null,
+                    location: audience.local_evento
+                }));
+
+                setProcesses(formattedProcesses);
             } catch (e) {
                 console.error("Falha ao buscar audiências:", e);
                 setError('Não foi possível carregar os dados da audiência.');
@@ -35,14 +50,8 @@ const Dashboard = () => {
         return <div className="container mx-auto px-4 py-8 text-red-500">{error}</div>;
     }
 
-    // Por enquanto, vamos apenas logar os dados para confirmar que a conexão funcionou
-    // Nos próximos passos, passaremos esses dados para os componentes filhos
-    console.log('Dados recebidos da API:', audiences);
-
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
-            {/* Os componentes abaixo ainda usarão dados mocados ou estáticos.
-                O próximo passo será passar os 'audiences' para eles. */}
             <CheckInPanel />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -56,7 +65,7 @@ const Dashboard = () => {
 
             <AudienceSummary />
             <HappeningNow />
-            <ProcessList />
+            <ProcessList processes={processes} />
         </div>
     );
 };

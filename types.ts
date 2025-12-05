@@ -26,7 +26,8 @@ export interface Process {
   processNumber: string;
   hearingDate: string;
   hearingTime: string;
-  mainLawyer: Lawyer;
+  mainLawyer: { name: string; avatarUrl: string };
   checkInStatus: CheckInStatus;
   confirmationTime: string | null;
+  location: string;
 }
