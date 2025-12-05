@@ -15,13 +15,18 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) =
     };
 
     const statusEnum = typeof status === 'string' ? normalizedStatus(status) : status;
+    
+    // Exibe "Pendente" quando o status for "ENVIADO"
+    const displayStatus = typeof status === 'string' && status.toUpperCase() === 'ENVIADO' 
+        ? 'Pendente' 
+        : status;
 
     const statusClasses = {
         [CheckInStatus.Feito]: 'bg-green-100 text-green-800',
         [CheckInStatus.Pendente]: 'bg-orange-100 text-orange-800',
         [CheckInStatus.Atrasado]: 'bg-red-100 text-red-800',
     };
-    return <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{status}</span>;
+    return <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{displayStatus}</span>;
 };
 
 const EmailIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>);
