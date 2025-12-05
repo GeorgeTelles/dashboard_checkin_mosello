@@ -31,6 +31,7 @@ app.get('/audiencias', async (req, res) => {
           ROW_NUMBER() OVER(PARTITION BY SPLIT_PART(processo, ' - ', 1), data_evento, hora_evento ORDER BY ts_sent DESC) as rn
         FROM audiencias
         WHERE processo IS NOT NULL
+          AND data_evento::date = CURRENT_DATE
       ) AS sub
       WHERE sub.rn = 1
       ORDER BY data_evento DESC, hora_evento DESC
