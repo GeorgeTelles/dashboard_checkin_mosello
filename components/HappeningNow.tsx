@@ -1,19 +1,18 @@
-
 import React from 'react';
-import { happeningNowHearings } from '../data/mockData';
 import type { Hearing } from '../types';
 
 const ClockIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
 const LocationIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>);
 
-const statusColors: { [key in Hearing['status']]: string } = {
+const statusColors: { [key: string]: string } = {
     'Em andamento': 'bg-red-100 text-red-700',
     'Aguardando início': 'bg-blue-100 text-blue-700',
     'Próximo': 'bg-yellow-100 text-yellow-700',
 };
-const confirmationColors: { [key in Hearing['confirmation']]: string } = {
-    'Confirmado': 'bg-green-100 text-green-700',
+const confirmationColors: { [key: string]: string } = {
+    'Feito': 'bg-green-100 text-green-700',
     'Pendente': 'bg-orange-100 text-orange-700',
+    'Atrasado': 'bg-red-100 text-red-800',
 };
 
 const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (
@@ -38,15 +37,15 @@ const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (
         </div>
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
              <div className="flex items-center">
-                <span className={`inline-block w-2.5 h-2.5 mr-2 rounded-full ${statusColors[hearing.status].split(' ')[0]}`}></span>
-                <span className={`text-sm font-medium ${statusColors[hearing.status].split(' ')[1]}`}>{hearing.status}</span>
+                <span className={`inline-block w-2.5 h-2.5 mr-2 rounded-full ${statusColors[hearing.status]?.split(' ')[0] || 'bg-gray-400'}`}></span>
+                <span className={`text-sm font-medium ${statusColors[hearing.status]?.split(' ')[1] || 'text-gray-600'}`}>{hearing.status}</span>
             </div>
         </div>
     </div>
 );
 
 
-const HappeningNow = () => {
+const HappeningNow: React.FC<{ hearings: Hearing[] }> = ({ hearings }) => {
     return (
         <div className="bg-white p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <div className="flex items-center justify-between">
@@ -62,7 +61,11 @@ const HappeningNow = () => {
                 </div>
             </div>
             <div className="mt-6 space-y-4">
-                {happeningNowHearings.map(hearing => <HearingCard key={hearing.id} hearing={hearing} />)}
+                {hearings && hearings.length > 0 ? (
+                    hearings.map(hearing => <HearingCard key={hearing.id} hearing={hearing} />)
+                ) : (
+                    <p className="text-gray-500 dark:text-slate-400">Não há audiências acontecendo no momento.</p>
+                )}
             </div>
         </div>
     );

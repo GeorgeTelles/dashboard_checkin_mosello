@@ -1,4 +1,3 @@
-
 export enum CheckInStatus {
   Feito = "Feito",
   Pendente = "Pendente",
@@ -14,11 +13,11 @@ export interface Lawyer {
 export interface Hearing {
   id: string;
   processNumber: string;
-  lawyer: Lawyer;
+  lawyer: { name: string; avatarUrl: string };
   time: string;
   location: string;
-  status: 'Em andamento' | 'Aguardando início' | 'Próximo';
-  confirmation: 'Confirmado' | 'Pendente';
+  status: string; // Alterado para string para maior flexibilidade
+  confirmation: string; // Alterado para string para maior flexibilidade
 }
 
 export interface Process {

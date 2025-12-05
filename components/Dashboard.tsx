@@ -5,10 +5,11 @@ import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
 import ProcessList from './ProcessList';
-import { Audience, Process, CheckInStatus } from '../types';
+import { Audience, Process, CheckInStatus, Hearing } from '../types';
 
 const Dashboard = () => {
     const [processes, setProcesses] = useState<Process[]>([]);
+    const [happeningNow, setHappeningNow] = useState<Hearing[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -20,23 +21,37 @@ const Dashboard = () => {
                 }
                 const data: Audience[] = await response.json();
 
-                // Mapeia os dados da API para o formato do Process
-                const formattedProcesses: Process[] = data.map(audience => ({
+                const allProcesses: Process[] = data.map(audience => ({
                     id: audience.checkin_id,
                     processNumber: audience.processo,
                     hearingDate: new Date(audience.data_evento).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }),
                     hearingTime: audience.hora_evento.substring(0, 5),
                     mainLawyer: {
                         name: audience.encarregado_nome,
-                        // Gerando avatar aleatório para manter o layout
                         avatarUrl: `https://i.pravatar.cc/150?u=${audience.encarregado_nome}`
                     },
-                    checkInStatus: audience.status as CheckInStatus, // Assumindo que o status da API corresponde
+                    checkInStatus: audience.status as CheckInStatus,
                     confirmationTime: audience.hora_checkin ? audience.hora_checkin.substring(0, 5) : null,
                     location: audience.local_evento
                 }));
+                
+                const nowHearings: Hearing[] = data
+                    .filter(audience => ['Em andamento', 'Aguardando início', 'Próximo'].includes(audience.status_audiencia))
+                    .map(audience => ({
+                        id: audience.checkin_id,
+                        processNumber: audience.processo,
+                        lawyer: {
+                            name: audience.encarregado_nome,
+                            avatarUrl: `https://i.pravatar.cc/150?u=${audience.encarregado_nome}`
+                        },
+                        time: audience.hora_evento.substring(0, 5),
+                        location: audience.local_evento,
+                        status: audience.status_audiencia,
+                        confirmation: audience.status // Usando o status do check-in como confirmação
+                    }));
 
-                setProcesses(formattedProcesses);
+                setProcesses(allProcesses);
+                setHappeningNow(nowHearings);
             } catch (e) {
                 console.error("Falha ao buscar audiências:", e);
                 setError('Não foi possível carregar os dados da audiência.');
@@ -64,7 +79,7 @@ const Dashboard = () => {
             </div>
 
             <AudienceSummary />
-            <HappeningNow />
+            <HappeningNow hearings={happeningNow} />
             <ProcessList processes={processes} />
         </div>
     );
