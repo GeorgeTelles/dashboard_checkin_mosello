@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { audienceSummary } from '../data/mockData';
+import React, { useMemo } from 'react';
 
 const CalendarIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>);
 const CheckCircleIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
@@ -39,7 +38,41 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ icon, title, value, total, 
     );
 };
 
-const AudienceSummary = () => {
+interface AudienceSummaryProps {
+    audiences: any[];
+}
+
+const AudienceSummary: React.FC<AudienceSummaryProps> = ({ audiences = [] }) => {
+    // Calcula as métricas dinamicamente baseado nos dados do BD
+    const audienceSummary = useMemo(() => {
+        if (!audiences || audiences.length === 0) {
+            return { today: 0, confirmed: 0, waiting: 0, attention: 0 };
+        }
+
+        // Audiências Hoje = total de linhas na tabela após deduplicação
+        const today = audiences.length;
+
+        // Check-in Confirmado = status "CONFIRMADO"
+        const confirmed = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
+        }).length;
+
+        // Aguardando Resposta = status "PENDENTE" ou "ENVIADO"
+        const waiting = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'PENDENTE' || status === 'ENVIADO';
+        }).length;
+
+        // Necessitam Atenção = status "ATRASADO"
+        const attention = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'ATRASADO';
+        }).length;
+
+        return { today, confirmed, waiting, attention };
+    }, [audiences]);
+
     return (
         <div>
             <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Resumo de Audiências</h2>

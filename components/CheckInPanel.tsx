@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { checkInStats } from '../data/mockData';
+import React, { useMemo } from 'react';
 
 const CheckIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>);
 const ClockIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
@@ -36,7 +35,42 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
     );
 };
 
-const CheckInPanel = () => {
+interface CheckInPanelProps {
+    audiences: any[];
+}
+
+const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [] }) => {
+    // Calcula as métricas dinamicamente baseado nos dados do BD
+    const checkInStats = useMemo(() => {
+        if (!audiences || audiences.length === 0) {
+            return { done: 0, pending: 0, late: 0, confirmationRate: 0 };
+        }
+
+        // Check-in Feito = status "CONFIRMADO"
+        const done = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
+        }).length;
+
+        // Check-in Pendente = status "PENDENTE" ou "ENVIADO"
+        const pending = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'PENDENTE' || status === 'ENVIADO';
+        }).length;
+
+        // Check-in Atrasado = status "ATRASADO"
+        const late = audiences.filter(item => {
+            const status = (item.status || '').toUpperCase();
+            return status === 'ATRASADO';
+        }).length;
+
+        // Taxa de confirmação
+        const total = audiences.length;
+        const confirmationRate = total > 0 ? Math.round((done / total) * 100 * 10) / 10 : 0;
+
+        return { done, pending, late, confirmationRate };
+    }, [audiences]);
+
     return (
         <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Painel de Check-In</h1>
@@ -64,7 +98,6 @@ const CheckInPanel = () => {
                     icon={<ChartBarIcon />} 
                     title="Taxa de Confirmação" 
                     value={`${checkInStats.confirmationRate}%`}
-                    change={checkInStats.rateChange}
                     iconBgColor="bg-blue-100 text-blue-600"
                 />
             </div>
