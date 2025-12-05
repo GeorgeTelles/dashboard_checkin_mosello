@@ -10,7 +10,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState<'dashboard' | 'one-page'>('dashboard');
+  const [currentPage, setCurrentPage] = React.useState<'dashboard' | 'one-page'>('one-page');
 
   React.useEffect(() => {
     if (theme === 'dark') {
@@ -49,7 +49,8 @@ function App() {
             onLogout={handleLogout}
         />
         <main className={`flex-1 overflow-x-hidden ${currentPage === 'dashboard' ? 'overflow-y-auto' : 'overflow-hidden'}`}>
-          {currentPage === 'dashboard' ? <Dashboard /> : <OnePage />}
+          {/* {currentPage === 'dashboard' ? <Dashboard /> : <OnePage />} */}
+          <OnePage />
         </main>
       </div>
     </div>
