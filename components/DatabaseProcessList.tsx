@@ -34,7 +34,7 @@ const DatabaseProcessList = () => {
     const [processList, setProcessList] = useState<Process[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/checkins')
+        fetch('https://dashboard.mosello.net.br/api/audiencias')
             .then(response => response.json())
             .then(data => {
                 console.log('Dados recebidos da API:', data);
