@@ -54,10 +54,10 @@ const OnePage = () => {
         <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <CheckInPanel audiences={audiences} />
         </div>
-        <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+        {/* <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <AudienceSummary audiences={audiences} />
-        </div>
-        <HappeningNow />
+        </div> */}
+        {/* <HappeningNow /> */}
       </div>
     </div>
   );
