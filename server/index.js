@@ -24,7 +24,16 @@ const pool = new Pool({
 // Rota de API para buscar as audiências
 app.get('/audiencias', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM audiencias ORDER BY data_evento DESC, hora_evento DESC');
+    const { rows } = await pool.query(`
+      SELECT * FROM (
+        SELECT
+          *,
+          ROW_NUMBER() OVER(PARTITION BY processo, data_evento, hora_evento ORDER BY ts_sent DESC) as rn
+        FROM audiencias
+      ) AS sub
+      WHERE sub.rn = 1
+      ORDER BY data_evento DESC, hora_evento DESC
+    `);
     res.json(rows);
   } catch (err) {
     console.error('Erro ao buscar audiências:', err);

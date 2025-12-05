@@ -40,10 +40,24 @@ const DatabaseProcessList = () => {
                 console.log('Dados recebidos da API:', data);
                 const formattedData: Process[] = data.map((item: any) => {
                     const lawyer = lawyers.find(l => l.name === item.encarregado_nome) || lawyers[0];
+                    const hearingDateStr = item.data_evento ? item.data_evento.split('T')[0] : null;
+                    let hearingDateFormatted = 'N/A';
+                    if (hearingDateStr) {
+                        const parts = hearingDateStr.split('-');
+                        if (parts.length === 3) {
+                            const year = parseInt(parts[0], 10);
+                            const day = parseInt(parts[1], 10);
+                            const month = parseInt(parts[2], 10);
+                            // O mês em new Date() é 0-indexado (0-11)
+                            const correctDate = new Date(year, month - 1, day);
+                            hearingDateFormatted = correctDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+                        }
+                    }
+
                     return {
                         id: item.checkin_id,
-                        processNumber: item.processo,
-                        hearingDate: item.data_evento ? new Date(item.data_evento).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A',
+                        processNumber: item.processo.split(' - ')[0],
+                        hearingDate: hearingDateFormatted,
                         hearingTime: item.hora_evento || 'N/A',
                         mainLawyer: lawyer,
                         checkInStatus: item.status || CheckInStatus.Pendente,
