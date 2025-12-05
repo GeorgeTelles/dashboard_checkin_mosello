@@ -27,7 +27,7 @@ const OnePage = () => {
       }
     };
 
-    // Busca inicial
+    // Busca inicial.
     fetchAudiences();
 
     // Atualização automática a cada 2 minutos (120000ms)
