@@ -15,7 +15,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchAudiences = async () => {
             try {
-                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
+                                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
                 const response = await fetch('/api/audiencias');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

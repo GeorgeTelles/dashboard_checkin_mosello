@@ -22,7 +22,7 @@ const pool = new Pool({
 });
 
 // Rota de API para buscar as audiências
-app.get('/api/audiencias', async (req, res) => {
+app.get('/audiencias', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM audiencias ORDER BY data_evento DESC, hora_evento DESC');
     res.json(rows);
@@ -33,7 +33,7 @@ app.get('/api/audiencias', async (req, res) => {
 });
 
 // Rota de teste de conexão com o banco de dados
-app.get('/api/db-test', async (req, res) => {
+app.get('/db-test', async (req, res) => {
   try {
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');
