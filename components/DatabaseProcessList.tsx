@@ -10,16 +10,23 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) =
         s = s.toUpperCase();
         if (s === 'FEITO' || s === 'REALIZADO' || s === 'CONFIRMADO') return CheckInStatus.Feito;
         if (s === 'PENDENTE' || s === 'ENVIADO') return CheckInStatus.Pendente;
-        if (s === 'ATRASADO') return CheckInStatus.Atrasado;
+        if (s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
         return CheckInStatus.Pendente; // Default
     };
 
     const statusEnum = typeof status === 'string' ? normalizedStatus(status) : status;
     
     // Exibe "Pendente" quando o status for "ENVIADO"
-    const displayStatus = typeof status === 'string' && status.toUpperCase() === 'ENVIADO' 
-        ? 'Pendente' 
-        : status;
+    // Exibe "Cancelado" quando o status for "NEGATIVA"
+    let displayStatus = status;
+    if (typeof status === 'string') {
+        const upperStatus = status.toUpperCase();
+        if (upperStatus === 'ENVIADO') {
+            displayStatus = 'Pendente';
+        } else if (upperStatus === 'NEGATIVA') {
+            displayStatus = 'Cancelado';
+        }
+    }
 
     const statusClasses = {
         [CheckInStatus.Feito]: 'bg-green-100 text-green-800',
