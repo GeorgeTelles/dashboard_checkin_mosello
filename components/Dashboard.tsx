@@ -28,7 +28,14 @@ const Dashboard = () => {
             }
         };
 
+        // Busca inicial
         fetchAudiences();
+
+        // Atualização automática a cada 2 minutos (120000ms)
+        const interval = setInterval(fetchAudiences, 120000);
+
+        // Cleanup: limpa o intervalo quando o componente é desmontado
+        return () => clearInterval(interval);
     }, []);
 
     if (error) {
