@@ -32,6 +32,19 @@ app.get('/api/audiencias', async (req, res) => {
   }
 });
 
+// Rota de teste de conexão com o banco de dados
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT NOW()');
+    client.release();
+    res.json({ success: true, dbTime: result.rows[0].now });
+  } catch (err) {
+    console.error('Erro no teste de conexão com o banco:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Rota de health check
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
