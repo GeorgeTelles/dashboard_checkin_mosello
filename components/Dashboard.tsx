@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import CheckInPanel from './CheckInPanel';
 import WeeklyStatusChart from './WeeklyStatusChart';
@@ -5,64 +6,25 @@ import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
 import ProcessList from './ProcessList';
-import { Audience, Process, CheckInStatus, Hearing } from '../types';
+import { Audience } from '../types';
 
 const Dashboard = () => {
-    const [processes, setProcesses] = useState<Process[]>([]);
-    const [happeningNow, setHappeningNow] = useState<Hearing[]>([]);
+    const [audiences, setAudiences] = useState<Audience[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchAudiences = async () => {
-            setIsLoading(true);
             try {
+                                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
                 const response = await fetch('/api/audiencias');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data: Audience[] = await response.json();
-
-                if (!data) {
-                    throw new Error("A API não retornou dados.");
-                }
-
-                const allProcesses: Process[] = data.map(audience => ({
-                    id: audience.checkin_id,
-                    processNumber: audience.processo,
-                    hearingDate: audience.data_evento, // Manter como string por enquanto
-                    hearingTime: audience.hora_evento.substring(0, 5),
-                    mainLawyer: {
-                        name: audience.encarregado_nome,
-                        avatarUrl: `https://i.pravatar.cc/150?u=${audience.encarregado_nome}`
-                    },
-                    checkInStatus: audience.status as CheckInStatus,
-                    confirmationTime: audience.hora_checkin ? audience.hora_checkin.substring(0, 5) : null,
-                    location: audience.local_evento
-                }));
-
-                const nowHearings: Hearing[] = data
-                    .filter(audience => audience.status_audiencia && ['Em andamento', 'Aguardando início', 'Próximo'].includes(audience.status_audiencia))
-                    .map(audience => ({
-                        id: audience.checkin_id,
-                        processNumber: audience.processo,
-                        lawyer: {
-                            name: audience.encarregado_nome,
-                            avatarUrl: `https://i.pravatar.cc/150?u=${audience.encarregado_nome}`
-                        },
-                        time: audience.hora_evento.substring(0, 5),
-                        location: audience.local_evento,
-                        status: audience.status_audiencia,
-                        confirmation: audience.status // Usando o status do check-in como confirmação
-                    }));
-
-                setProcesses(allProcesses);
-                setHappeningNow(nowHearings);
+                const data = await response.json();
+                setAudiences(data);
             } catch (e) {
                 console.error("Falha ao buscar audiências:", e);
                 setError('Não foi possível carregar os dados da audiência.');
-            } finally {
-                setIsLoading(false);
             }
         };
 
@@ -72,27 +34,29 @@ const Dashboard = () => {
     if (error) {
         return <div className="container mx-auto px-4 py-8 text-red-500">{error}</div>;
     }
-    
-    if (isLoading) {
-        return <div className="container mx-auto px-4 py-8">Carregando...</div>;
-    }
+
+    // Por enquanto, vamos apenas logar os dados para confirmar que a conexão funcionou
+    // Nos próximos passos, passaremos esses dados para os componentes filhos
+    console.log('Dados recebidos da API:', audiences);
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
-            <CheckInPanel processes={processes} />
+            {/* Os componentes abaixo ainda usarão dados mocados ou estáticos.
+                O próximo passo será passar os 'audiences' para eles. */}
+            <CheckInPanel />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3">
-                    <WeeklyStatusChart processes={processes} />
+                    <WeeklyStatusChart />
                 </div>
                 <div className="lg:col-span-2">
-                    <AudienceEvolutionChart processes={processes} />
+                    <AudienceEvolutionChart />
                 </div>
             </div>
 
-            <AudienceSummary processes={processes} />
-            <HappeningNow hearings={happeningNow} />
-            <ProcessList processes={processes} />
+            <AudienceSummary />
+            <HappeningNow />
+            <ProcessList />
         </div>
     );
 };

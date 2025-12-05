@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Process } from '../types';
+import { audienceSummary } from '../data/mockData';
 
 const CalendarIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>);
 const CheckCircleIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
@@ -38,39 +39,44 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ icon, title, value, total, 
     );
 };
 
-const AudienceSummary: React.FC<{ processes: Process[] }> = ({ processes }) => {
-    const today = new Date();
-    const todayString = today.toISOString().split('T')[0];
-
-    const todayHearings = processes.filter(p => p.hearingDate.startsWith(todayString));
-
-    const summary = {
-        today: todayHearings.length,
-        confirmed: todayHearings.filter(p => p.checkInStatus === 'Feito').length,
-        waiting: todayHearings.filter(p => p.checkInStatus === 'Pendente').length,
-        attention: todayHearings.filter(p => p.checkInStatus === 'Atrasado').length,
-    };
-
+const AudienceSummary = () => {
     return (
-        <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-            <h2 className="text-xl font-bold text-gray-800 mb-4 dark:text-slate-100">Resumo das Audiências de Hoje</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div>
-                    <p className="text-3xl font-bold text-blue-600">{summary.today}</p>
-                    <p className="text-sm text-gray-500 dark:text-slate-400">Total para Hoje</p>
-                </div>
-                <div>
-                    <p className="text-3xl font-bold text-green-600">{summary.confirmed}</p>
-                    <p className="text-sm text-gray-500 dark:text-slate-400">Confirmadas</p>
-                </div>
-                <div>
-                    <p className="text-3xl font-bold text-orange-500">{summary.waiting}</p>
-                    <p className="text-sm text-gray-500 dark:text-slate-400">Aguardando</p>
-                </div>
-                <div>
-                    <p className="text-3xl font-bold text-red-500">{summary.attention}</p>
-                    <p className="text-sm text-gray-500 dark:text-slate-400">Atenção</p>
-                </div>
+        <div>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Resumo de Audiências</h2>
+            <p className="text-gray-500 mt-1 dark:text-slate-400">Status das audiências e confirmações do dia</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+                <ProgressCard
+                    icon={<CalendarIcon />}
+                    title="Audiências Hoje"
+                    value={audienceSummary.today}
+                    total={audienceSummary.today}
+                    label="Agendadas para hoje"
+                    color="bg-blue-500"
+                />
+                <ProgressCard
+                    icon={<CheckCircleIcon />}
+                    title="Check-in Confirmado"
+                    value={audienceSummary.confirmed}
+                    total={audienceSummary.today}
+                    label="Advogados confirmaram"
+                    color="bg-green-500"
+                />
+                <ProgressCard
+                    icon={<MailIcon />}
+                    title="Aguardando Resposta"
+                    value={audienceSummary.waiting}
+                    total={audienceSummary.today}
+                    label="Mensagens enviadas"
+                    color="bg-orange-500"
+                />
+                <ProgressCard
+                    icon={<WarningIcon />}
+                    title="Necessitam Atenção"
+                    value={audienceSummary.attention}
+                    total={audienceSummary.today}
+                    label="Check-in atrasado"
+                    color="bg-red-500"
+                />
             </div>
         </div>
     );
