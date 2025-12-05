@@ -3,7 +3,7 @@ import React from 'react';
 import logoImg from '../logo.png';
 
 const LogoIcon = () => (
-    <img src={logoImg} alt="Mosello Advocacia" className="w-8 h-8 object-contain" />
+    <img src={logoImg} alt="Mosello Advocacia" className="w-25 h-25 object-contain" />
 );
 
 
