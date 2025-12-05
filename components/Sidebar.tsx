@@ -1,14 +1,9 @@
 
 import React from 'react';
+import logoImg from '../logo.png';
 
 const LogoIcon = () => (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
-        <path d="M16 3.5L4 10.5V24.5L16 31.5L28 24.5V10.5L16 3.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M16 17.5L4 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M16 17.5V31.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M16 17.5L28 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M9 14.5L23 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
+    <img src={logoImg} alt="Mosello Advocacia" className="w-8 h-8 object-contain" />
 );
 
 
@@ -47,9 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, currentPage, setCu
             <div className={`fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} dark:bg-slate-800 dark:border-slate-700`}>
                 <div className="flex items-center justify-start h-16 px-6 border-b border-slate-200 dark:border-slate-700">
                     <div className="flex items-center">
-                        <div className="p-2 rounded-lg bg-blue-600">
-                            <LogoIcon />
-                        </div>
+                        <LogoIcon />
                         <span className="ml-3 text-lg font-semibold text-gray-800 dark:text-slate-200">Mosello Advocacia</span>
                     </div>
                 </div>
