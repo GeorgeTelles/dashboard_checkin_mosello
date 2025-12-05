@@ -39,7 +39,13 @@ const DatabaseProcessList = () => {
             .then(data => {
                 console.log('Dados recebidos da API:', data);
                 const formattedData: Process[] = data.map((item: any) => {
-                    const lawyer = lawyers.find(l => l.name === item.encarregado_nome) || lawyers[0];
+                    // Cria o advogado dinamicamente a partir dos dados do banco
+                    const lawyerName = item.encarregado_nome || 'Não atribuído';
+                    const lawyer = {
+                        id: lawyerName.toLowerCase().replace(/\s+/g, '-'),
+                        name: lawyerName,
+                        avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(lawyerName)}&background=random&size=128`
+                    };
                     
                     // Trata o número do processo
                     const processNumber = item.processo ? item.processo.split(' - ')[0] : 'N/A';

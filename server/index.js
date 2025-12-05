@@ -28,7 +28,7 @@ app.get('/audiencias', async (req, res) => {
       SELECT * FROM (
         SELECT
           *,
-          ROW_NUMBER() OVER(PARTITION BY processo, data_evento, hora_evento ORDER BY ts_sent DESC) as rn
+          ROW_NUMBER() OVER(PARTITION BY SPLIT_PART(processo, ' - ', 1), data_evento, hora_evento ORDER BY ts_sent DESC) as rn
         FROM audiencias
         WHERE processo IS NOT NULL
       ) AS sub
