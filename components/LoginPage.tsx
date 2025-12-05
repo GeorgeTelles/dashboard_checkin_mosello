@@ -2,7 +2,7 @@ import React from 'react';
 import logoImg from '../logo.png';
 
 const LogoIcon = () => (
-    <img src={logoImg} alt="Mosello Advocacia" className="w-25 h-25 object-contain" />
+    <img src={logoImg} alt="Mosello Advocacia" className="w-15 h-25 object-contain" />
 );
 
 
@@ -30,7 +30,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <div className="flex items-center justify-center min-h-screen bg-slate-100">
             <div className="w-full max-w-sm p-10 space-y-8 bg-white rounded-2xl shadow-lg border border-slate-200/50">
                 <div className="flex flex-col items-center">
-                    <div className="p-3 rounded-xl bg-blue-600 mb-4">
+                    <div className="mb-4">
                         <LogoIcon />
                     </div>
                     <h1 className="text-2xl font-bold text-center text-gray-900">Mosello Advocacia</h1>
