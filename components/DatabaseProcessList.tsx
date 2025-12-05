@@ -38,11 +38,17 @@ interface DatabaseProcessListProps {
     audiences: any[];
 }
 
-const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences }) => {
+const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [] }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
 
     useEffect(() => {
+        if (!audiences || audiences.length === 0) {
+            console.log('🔄 DatabaseProcessList: aguardando dados...');
+            setProcessList([]);
+            return;
+        }
+        
         console.log('🔄 DatabaseProcessList recebeu novos dados:', audiences.length, 'registros');
         const formattedData: Process[] = audiences.map((item: any) => {
                     // Cria o advogado dinamicamente a partir dos dados do banco
