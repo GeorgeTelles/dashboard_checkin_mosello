@@ -69,15 +69,15 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                     // Trata o número do processo
                     const processNumber = item.processo ? item.processo.split(' - ')[0] : 'N/A';
                     
-                    // Trata a data no formato YYYY-DD-MM
+                    // Trata a data no formato YYYY-MM-DD
                     const hearingDateStr = item.data_evento ? item.data_evento.split('T')[0] : null;
                     let hearingDateFormatted = 'N/A';
                     if (hearingDateStr) {
                         const parts = hearingDateStr.split('-');
                         if (parts.length === 3) {
                             const year = parseInt(parts[0], 10);
-                            const day = parseInt(parts[1], 10);
-                            const month = parseInt(parts[2], 10);
+                            const month = parseInt(parts[1], 10);
+                            const day = parseInt(parts[2], 10);
                             const correctDate = new Date(year, month - 1, day);
                             hearingDateFormatted = correctDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
                         }
