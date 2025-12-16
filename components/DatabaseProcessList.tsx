@@ -78,6 +78,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                             const year = parseInt(parts[0], 10);
                             const month = parseInt(parts[1], 10);
                             const day = parseInt(parts[2], 10);
+                            console.log('Date Debug:', { hearingDateStr, year, month, day });
                             const correctDate = new Date(year, month - 1, day);
                             hearingDateFormatted = correctDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
                         }
