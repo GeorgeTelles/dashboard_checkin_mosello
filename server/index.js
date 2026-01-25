@@ -28,8 +28,8 @@ app.get('/audiencias', async (req, res) => {
       SELECT * FROM (
         SELECT
           *,
-          ROW_NUMBER() OVER(PARTITION BY SPLIT_PART(processo, ' - ', 1), data_evento, hora_evento ORDER BY ts_sent DESC) as rn
-        FROM audiencias
+          ROW_NUMBER() OVER (PARTITION BY checkin_id ORDER BY checkin_id) AS rn
+        FROM audiencias_check
         WHERE processo IS NOT NULL
           AND data_evento::date = CURRENT_DATE
       ) AS sub
