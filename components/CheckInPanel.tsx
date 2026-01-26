@@ -5,6 +5,7 @@ const CheckIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 
 const ClockIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>);
 const ExclamationIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>);
 const ChartBarIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>);
+const CalendarIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>);
 
 interface StatCardProps {
     icon: React.ReactNode;
@@ -37,9 +38,31 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
 
 interface CheckInPanelProps {
     audiences: any[];
+    selectedDate: Date;
+    onDateChange: (date: Date) => void;
 }
 
-const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [] }) => {
+const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [], selectedDate, onDateChange }) => {
+    const [showDatePicker, setShowDatePicker] = React.useState(false);
+    const datePickerRef = React.useRef<HTMLDivElement>(null);
+    
+    // Fecha o dropdown ao clicar fora
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+                setShowDatePicker(false);
+            }
+        };
+        
+        if (showDatePicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showDatePicker]);
+    
     // Calcula as métricas dinamicamente baseado nos dados do BD
     const checkInStats = useMemo(() => {
         if (!audiences || audiences.length === 0) {
@@ -71,10 +94,111 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [] }) => {
         return { done, pending, late, confirmationRate };
     }, [audiences]);
 
+    // Formata a data para exibição
+    const formatDate = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const compareDate = new Date(date);
+        compareDate.setHours(0, 0, 0, 0);
+        
+        if (compareDate.getTime() === today.getTime()) {
+            return 'Hoje';
+        }
+        
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (compareDate.getTime() === yesterday.getTime()) {
+            return 'Ontem';
+        }
+        
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        if (compareDate.getTime() === tomorrow.getTime()) {
+            return 'Amanhã';
+        }
+        
+        return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    // Atalhos de data
+    const setToday = () => {
+        onDateChange(new Date());
+        setShowDatePicker(false);
+    };
+
+    const setYesterday = () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        onDateChange(yesterday);
+        setShowDatePicker(false);
+    };
+
+    const setTomorrow = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        onDateChange(tomorrow);
+        setShowDatePicker(false);
+    };
+
     return (
         <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Painel de Check-In</h1>
-            <p className="text-gray-500 mt-1 dark:text-slate-400">Monitoramento em tempo real das confirmações de presença dos advogados</p>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Painel de Check-In</h1>
+                    <p className="text-gray-500 mt-1 dark:text-slate-400">Monitoramento em tempo real das confirmações de presença dos advogados</p>
+                </div>
+                
+                {/* Filtro de Data */}
+                <div className="mt-4 md:mt-0 relative" ref={datePickerRef}>
+                    <button
+                        onClick={() => setShowDatePicker(!showDatePicker)}
+                        className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
+                    >
+                        <CalendarIcon />
+                        <span className="ml-2">{formatDate(selectedDate)}</span>
+                    </button>
+                    
+                    {/* Dropdown do Calendário */}
+                    {showDatePicker && (
+                        <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-700">
+                            <div className="p-4">
+                                {/* Atalhos */}
+                                <div className="flex gap-2 mb-4">
+                                    <button
+                                        onClick={setYesterday}
+                                        className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                    >
+                                        Ontem
+                                    </button>
+                                    <button
+                                        onClick={setToday}
+                                        className="flex-1 px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+                                    >
+                                        Hoje
+                                    </button>
+                                    <button
+                                        onClick={setTomorrow}
+                                        className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                    >
+                                        Amanhã
+                                    </button>
+                                </div>
+                                
+                                {/* Input de Data */}
+                                <input
+                                    type="date"
+                                    value={selectedDate.toISOString().split('T')[0]}
+                                    onChange={(e) => {
+                                        onDateChange(new Date(e.target.value + 'T00:00:00'));
+                                        setShowDatePicker(false);
+                                    }}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
                 <StatCard 
                     icon={<CheckIcon />} 

@@ -24,18 +24,32 @@ const pool = new Pool({
 // Rota de API para buscar as audiências
 app.get('/audiencias', async (req, res) => {
   try {
-    const { rows } = await pool.query(`
-      SELECT * FROM (
-        SELECT
-          *,
-          ROW_NUMBER() OVER (PARTITION BY "id" ORDER BY "id") AS rn
+    const { date } = req.query;
+    
+    let query;
+    let queryParams = [];
+    
+    if (date) {
+      // Se uma data específica foi fornecida (formato YYYY-MM-DD)
+      query = `
+        SELECT *
         FROM audiencias_check
         WHERE "processo.pasta" IS NOT NULL
-          AND to_date("data", 'DD/MM/YYYY') = CURRENT_DATE
-      ) AS sub
-      WHERE sub.rn = 1
-      ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC
-    `);
+          AND to_date("data", 'DD/MM/YYYY') = $1
+        ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC;
+      `;
+      queryParams = [date];
+    } else {
+      // Se nenhuma data foi fornecida, retorna TODAS as audiências
+      query = `
+        SELECT *
+        FROM audiencias_check
+        WHERE "processo.pasta" IS NOT NULL
+        ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC;
+      `;
+    }
+    
+    const { rows } = await pool.query(query, queryParams);
     res.json(rows);
   } catch (err) {
     console.error('Erro ao buscar audiências:', err);

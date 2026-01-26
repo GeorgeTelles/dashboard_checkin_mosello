@@ -11,13 +11,18 @@ import { Audience } from '../types';
 const Dashboard = () => {
     const [audiences, setAudiences] = useState<Audience[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Padrão: hoje
 
     useEffect(() => {
         const fetchAudiences = async () => {
             try {
                 console.log('🔄 Atualizando dados...', new Date().toLocaleTimeString());
-                                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
-                const response = await fetch('/api/audiencias');
+                
+                // Formata a data para YYYY-MM-DD
+                const dateStr = selectedDate.toISOString().split('T')[0];
+                
+                // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
+                const response = await fetch(`/api/audiencias?date=${dateStr}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -38,7 +43,7 @@ const Dashboard = () => {
 
         // Cleanup: limpa o intervalo quando o componente é desmontado
         return () => clearInterval(interval);
-    }, []);
+    }, [selectedDate]);
 
     if (error) {
         return <div className="container mx-auto px-4 py-8 text-red-500">{error}</div>;
@@ -50,7 +55,7 @@ const Dashboard = () => {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
-            <CheckInPanel audiences={audiences} />
+            <CheckInPanel audiences={audiences} selectedDate={selectedDate} onDateChange={setSelectedDate} />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3">
