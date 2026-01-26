@@ -2,7 +2,7 @@
 export enum CheckInStatus {
   Feito = "Feito",
   Pendente = "A Confirmar",
-  Atrasado = "Atrasado",
+  Atrasado = "Não Realizado",
   Nulo = "-"
 }
 

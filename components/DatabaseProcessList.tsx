@@ -11,7 +11,7 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | nu
         s = s.toUpperCase();
         if (s === 'FEITO' || s === 'REALIZADO' || s === 'CONFIRMADO') return CheckInStatus.Feito;
         if (s === 'A CONFIRMAR' || s === 'ENVIADO') return CheckInStatus.Pendente;
-        if (s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
+        if (s === 'NÃO REALIZADO' || s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
         return CheckInStatus.Nulo; // Default.
     };
 
