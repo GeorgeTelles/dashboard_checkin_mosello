@@ -38,18 +38,18 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
 
 interface CheckInPanelProps {
     audiences: any[];
-    startDate: Date;
-    endDate: Date;
-    onStartDateChange: (date: Date) => void;
-    onEndDateChange: (date: Date) => void;
+    startDate?: Date;
+    endDate?: Date;
+    onStartDateChange?: (date: Date) => void;
+    onEndDateChange?: (date: Date) => void;
 }
 
 const CheckInPanel: React.FC<CheckInPanelProps> = ({ 
     audiences = [], 
     startDate, 
     endDate,
-    onStartDateChange,
-    onEndDateChange
+    onStartDateChange = () => {},
+    onEndDateChange = () => {}
 }) => {
     const [showDatePicker, setShowDatePicker] = React.useState(false);
     const datePickerRef = React.useRef<HTMLDivElement>(null);
@@ -144,24 +144,24 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
     // Atalhos de data
     const setToday = () => {
         const today = new Date();
-        onStartDateChange(today);
-        onEndDateChange(today);
+        if (onStartDateChange) onStartDateChange(today);
+        if (onEndDateChange) onEndDateChange(today);
         setShowDatePicker(false);
     };
 
     const setYesterday = () => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        onStartDateChange(yesterday);
-        onEndDateChange(yesterday);
+        if (onStartDateChange) onStartDateChange(yesterday);
+        if (onEndDateChange) onEndDateChange(yesterday);
         setShowDatePicker(false);
     };
 
     const setTomorrow = () => {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        onStartDateChange(tomorrow);
-        onEndDateChange(tomorrow);
+        if (onStartDateChange) onStartDateChange(tomorrow);
+        if (onEndDateChange) onEndDateChange(tomorrow);
         setShowDatePicker(false);
     };
 
@@ -171,8 +171,8 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
         firstDay.setDate(today.getDate() - today.getDay()); // Domingo
         const lastDay = new Date(today);
         lastDay.setDate(today.getDate() + (6 - today.getDay())); // Sábado
-        onStartDateChange(firstDay);
-        onEndDateChange(lastDay);
+        if (onStartDateChange) onStartDateChange(firstDay);
+        if (onEndDateChange) onEndDateChange(lastDay);
         setShowDatePicker(false);
     };
 
@@ -180,8 +180,8 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
         const today = new Date();
         const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        onStartDateChange(firstDay);
-        onEndDateChange(lastDay);
+        if (onStartDateChange) onStartDateChange(firstDay);
+        if (onEndDateChange) onEndDateChange(lastDay);
         setShowDatePicker(false);
     };
 
