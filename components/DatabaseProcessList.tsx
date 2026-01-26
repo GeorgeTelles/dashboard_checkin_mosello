@@ -194,9 +194,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                     <th scope="col" className="px-6 py-3">Local</th>
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
                                     <th scope="col" className="px-6 py-3">Status Checkin</th>
-                                    <th scope="col" className="px-6 py-3">Hora do Checkin</th>
+                                    <th scope="col" className="px-6 py-3">Hora Checkin</th>
                                     <th scope="col" className="px-6 py-3">Status Checkout</th>
-                                    <th scope="col" className="px-6 py-3">Hora do Checkout</th>
+                                    <th scope="col" className="px-6 py-3">Hora Checkout</th>
                                     <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
