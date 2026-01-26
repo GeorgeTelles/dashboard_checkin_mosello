@@ -70,10 +70,10 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
             return status === 'A CONFIRMAR' || status === 'ENVIADO';
         }).length;
 
-        // Check-in Atrasado = status "ATRASADO"
+        // Check-in Não Realizado = status "NÃO REALIZADO"
         const late = audiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
-            return status === 'ATRASADO';
+            return status === 'NÃO REALIZADO';
         }).length;
 
         // Taxa de confirmação
@@ -100,13 +100,13 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
                 />
                 <StatCard 
                     icon={<ClockIcon />} 
-                    title="Check-in Pendente" 
+                    title="Check-in A Confirmar" 
                     value={checkInStats.pending}
                     iconBgColor="bg-orange-100 text-orange-600"
                 />
                 <StatCard 
                     icon={<ExclamationIcon />} 
-                    title="Check-in Atrasado" 
+                    title="Check-ins Não Realizados" 
                     value={checkInStats.late}
                     iconBgColor="bg-red-100 text-red-600"
                 />
