@@ -168,8 +168,8 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                         avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(lawyerName)}&background=random&size=128`
                     };
                     
-                    // Trata o número do processo
-                    const processNumber = item['processo.pasta'] || 'N/A';
+                    // Trata o número do processo - usa o campo tratado do SQL ou faz fallback
+                    const processNumber = item['processo_numero'] || item['processo.pasta']?.split(' - ')[0] || 'N/A';
                     
                     // Trata a data no formato DD/MM/YYYY
                     const hearingDateStr = item['data'] || null;
@@ -324,7 +324,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                         {processList.map((processItem) => (
                             <div key={processItem.id} className="bg-white p-4 rounded-lg border border-slate-200 space-y-4 dark:bg-slate-700/50 dark:border-slate-700">
                                 <div className="flex justify-between items-start">
-                                    <span className="font-medium text-gray-900 text-sm break-all pr-2 dark:text-slate-100">{processItem.processNumber}</span>
+                                    <span className="font-medium text-gray-900 text-sm dark:text-slate-100">{processItem.processNumber}</span>
                                     <StatusBadge status={processItem.checkInStatus} />
                                 </div>
                                 
@@ -366,7 +366,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-gray-400 sticky top-0">
                                 <tr>
-                                    <th scope="col" className="px-6 py-3">Processo</th>
+                                    <th scope="col" className="px-6 py-3 w-48">Processo</th>
                                     <th scope="col" className="px-6 py-3">Data da Audiência</th>
                                     <th scope="col" className="px-6 py-3">Hora da Audiência</th>
                                     <th scope="col" className="px-6 py-3">Local</th>
