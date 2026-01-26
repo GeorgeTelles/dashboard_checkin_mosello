@@ -18,6 +18,13 @@ const Dashboard = () => {
             try {
                 console.log('🔄 Atualizando dados...', new Date().toLocaleTimeString());
                 
+                // Verifica se selectedDate é válido
+                if (!selectedDate) {
+                    console.warn('⚠️ selectedDate é undefined, usando data atual');
+                    setSelectedDate(new Date());
+                    return;
+                }
+                
                 // Formata a data para YYYY-MM-DD
                 const dateStr = selectedDate.toISOString().split('T')[0];
                 
