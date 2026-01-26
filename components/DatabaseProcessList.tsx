@@ -33,6 +33,7 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) =
         [CheckInStatus.Feito]: 'bg-green-100 text-green-800',
         [CheckInStatus.Pendente]: 'bg-orange-100 text-orange-800',
         [CheckInStatus.Atrasado]: 'bg-red-100 text-red-800',
+        [CheckInStatus.Nulo]: 'bg-gray-100 text-gray-800',
     };
     return <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{displayStatus}</span>;
 };
@@ -85,16 +86,24 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                         }
                     }
                     
+                    // Determina status e horários com lógica de dependência
+                    const checkInStatus = item['status_checkin'] || CheckInStatus.Nulo;
+                    const checkOutStatus = item['status_checkout'] || CheckInStatus.Nulo;
+                    
+                    // Se status for nulo, força horário nulo também
+                    const confirmationTime = checkInStatus === CheckInStatus.Nulo ? null : (item['hora_checkin'] || null);
+                    const checkOutTime = checkOutStatus === CheckInStatus.Nulo ? null : (item['hora_checkout'] || null);
+                    
                     return {
                         id: item.id,
                         processNumber: processNumber,
                         hearingDate: hearingDateFormatted,
                         hearingTime: item['hora'] || 'N/A',
                         mainLawyer: lawyer,
-                        checkInStatus: item['status_checkin'] || CheckInStatus.Pendente,
-                        confirmationTime: item['hora_checkin'] || null,
-                        checkOutStatus: item['status_checkout'] || CheckInStatus.Pendente,
-                        checkOutTime: item['hora_checkout'] || null,
+                        checkInStatus: checkInStatus,
+                        confirmationTime: confirmationTime,
+                        checkOutStatus: checkOutStatus,
+                        checkOutTime: checkOutTime,
                         location: item['processo.faseatual.vara']
                     };
                 }).filter((p: Process) => p.id);
