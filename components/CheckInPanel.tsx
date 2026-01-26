@@ -38,18 +38,18 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
 
 interface CheckInPanelProps {
     audiences: any[];
-    startDate?: Date;
-    endDate?: Date;
-    onStartDateChange?: (date: Date) => void;
-    onEndDateChange?: (date: Date) => void;
+    startDate: Date;
+    endDate: Date;
+    onStartDateChange: (date: Date) => void;
+    onEndDateChange: (date: Date) => void;
 }
 
 const CheckInPanel: React.FC<CheckInPanelProps> = ({ 
     audiences = [], 
     startDate, 
     endDate,
-    onStartDateChange = () => {},
-    onEndDateChange = () => {}
+    onStartDateChange,
+    onEndDateChange
 }) => {
     const [showDatePicker, setShowDatePicker] = React.useState(false);
     const datePickerRef = React.useRef<HTMLDivElement>(null);
@@ -143,45 +143,55 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
 
     // Atalhos de data
     const setToday = () => {
+        console.log('📅 Botão "Hoje" clicado');
         const today = new Date();
-        if (onStartDateChange) onStartDateChange(today);
-        if (onEndDateChange) onEndDateChange(today);
+        console.log('📅 Definindo datas para:', today);
+        onStartDateChange(today);
+        onEndDateChange(today);
         setShowDatePicker(false);
     };
 
     const setYesterday = () => {
+        console.log('📅 Botão "Ontem" clicado');
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        if (onStartDateChange) onStartDateChange(yesterday);
-        if (onEndDateChange) onEndDateChange(yesterday);
+        console.log('📅 Definindo datas para:', yesterday);
+        onStartDateChange(yesterday);
+        onEndDateChange(yesterday);
         setShowDatePicker(false);
     };
 
     const setTomorrow = () => {
+        console.log('📅 Botão "Amanhã" clicado');
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        if (onStartDateChange) onStartDateChange(tomorrow);
-        if (onEndDateChange) onEndDateChange(tomorrow);
+        console.log('📅 Definindo datas para:', tomorrow);
+        onStartDateChange(tomorrow);
+        onEndDateChange(tomorrow);
         setShowDatePicker(false);
     };
 
     const setThisWeek = () => {
+        console.log('📅 Botão "Esta Semana" clicado');
         const today = new Date();
         const firstDay = new Date(today);
         firstDay.setDate(today.getDate() - today.getDay()); // Domingo
         const lastDay = new Date(today);
         lastDay.setDate(today.getDate() + (6 - today.getDay())); // Sábado
-        if (onStartDateChange) onStartDateChange(firstDay);
-        if (onEndDateChange) onEndDateChange(lastDay);
+        console.log('📅 Definindo range:', firstDay, 'até', lastDay);
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
         setShowDatePicker(false);
     };
 
     const setThisMonth = () => {
+        console.log('📅 Botão "Este Mês" clicado');
         const today = new Date();
         const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
         const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        if (onStartDateChange) onStartDateChange(firstDay);
-        if (onEndDateChange) onEndDateChange(lastDay);
+        console.log('📅 Definindo range:', firstDay, 'até', lastDay);
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
         setShowDatePicker(false);
     };
 
@@ -196,7 +206,10 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
                 {/* Filtro de Data */}
                 <div className="mt-4 md:mt-0 relative" ref={datePickerRef}>
                     <button
-                        onClick={() => setShowDatePicker(!showDatePicker)}
+                        onClick={() => {
+                            console.log('📅 Botão calendário clicado, showDatePicker atual:', showDatePicker);
+                            setShowDatePicker(!showDatePicker);
+                        }}
                         className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
                     >
                         <CalendarIcon />

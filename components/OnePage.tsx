@@ -9,12 +9,39 @@ import { Audience } from '../types';
 const OnePage = () => {
   const [audiences, setAudiences] = useState<Audience[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<Date>(new Date()); // Padrão: hoje
+  const [endDate, setEndDate] = useState<Date>(new Date()); // Padrão: hoje
+
+  // Handlers com logs
+  const handleStartDateChange = (date: Date) => {
+    console.log('🔄 OnePage: startDate mudou para:', date);
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: Date) => {
+    console.log('🔄 OnePage: endDate mudou para:', date);
+    setEndDate(date);
+  };
 
   useEffect(() => {
     const fetchAudiences = async () => {
       try {
         console.log('🔄 Atualizando dados...', new Date().toLocaleTimeString());
-        const response = await fetch('/api/audiencias');
+        
+        // Verifica se as datas são válidas
+        if (!startDate || !endDate) {
+          console.warn('⚠️ Datas inválidas, usando data atual');
+          const today = new Date();
+          setStartDate(today);
+          setEndDate(today);
+          return;
+        }
+        
+        // Formata as datas para YYYY-MM-DD
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+        
+        const response = await fetch(`/api/audiencias?startDate=${startDateStr}&endDate=${endDateStr}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -35,7 +62,7 @@ const OnePage = () => {
 
     // Cleanup: limpa o intervalo quando o componente é desmontado
     return () => clearInterval(interval);
-  }, []);
+  }, [startDate, endDate]);
 
   if (error) {
     return <div className="container mx-auto px-4 py-8 text-red-500">{error}</div>;
@@ -52,7 +79,13 @@ const OnePage = () => {
       <div className="lg:w-1/3 h-full flex flex-col gap-6 overflow-y-auto">
         {/* Remove main title from these components for a cleaner look in this view */}
         <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-            <CheckInPanel audiences={audiences} />
+            <CheckInPanel 
+                audiences={audiences}
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
+            />
         </div>
         {/* <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
             <AudienceSummary audiences={audiences} />
