@@ -40,7 +40,7 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | nu
         <div className="flex flex-col items-center justify-center">
             <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{displayStatus}</span>
             {time && statusEnum !== CheckInStatus.Nulo && (
-                <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">{time}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400 mt-1 text-center">{time}</span>
             )}
         </div>
     );
