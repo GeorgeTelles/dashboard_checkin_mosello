@@ -13,7 +13,7 @@ app.use(cors({
 
 // Configuração da Conexão com o PostgreSQL
 const pool = new Pool({
-  host: process.env.PG_HOST || 'host.docker.internal',
+  host: process.env.PG_HOST || 'db.mosello.net.br',
   port: process.env.PG_PORT || 5433,
   database: process.env.PG_DATABASE || 'checkin',
   user: process.env.PG_USER || 'admin',
