@@ -11,25 +11,29 @@ import { Audience } from '../types';
 const Dashboard = () => {
     const [audiences, setAudiences] = useState<Audience[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Padrão: hoje
+    const [startDate, setStartDate] = useState<Date>(new Date()); // Padrão: hoje
+    const [endDate, setEndDate] = useState<Date>(new Date()); // Padrão: hoje
 
     useEffect(() => {
         const fetchAudiences = async () => {
             try {
                 console.log('🔄 Atualizando dados...', new Date().toLocaleTimeString());
                 
-                // Verifica se selectedDate é válido
-                if (!selectedDate) {
-                    console.warn('⚠️ selectedDate é undefined, usando data atual');
-                    setSelectedDate(new Date());
+                // Verifica se as datas são válidas
+                if (!startDate || !endDate) {
+                    console.warn('⚠️ Datas inválidas, usando data atual');
+                    const today = new Date();
+                    setStartDate(today);
+                    setEndDate(today);
                     return;
                 }
                 
-                // Formata a data para YYYY-MM-DD
-                const dateStr = selectedDate.toISOString().split('T')[0];
+                // Formata as datas para YYYY-MM-DD
+                const startDateStr = startDate.toISOString().split('T')[0];
+                const endDateStr = endDate.toISOString().split('T')[0];
                 
                 // A URL será '/api/audiencias' por causa do proxy reverso do Traefik
-                const response = await fetch(`/api/audiencias?date=${dateStr}`);
+                const response = await fetch(`/api/audiencias?startDate=${startDateStr}&endDate=${endDateStr}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -50,7 +54,7 @@ const Dashboard = () => {
 
         // Cleanup: limpa o intervalo quando o componente é desmontado
         return () => clearInterval(interval);
-    }, [selectedDate]);
+    }, [startDate, endDate]);
 
     if (error) {
         return <div className="container mx-auto px-4 py-8 text-red-500">{error}</div>;
@@ -62,7 +66,13 @@ const Dashboard = () => {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
-            <CheckInPanel audiences={audiences} selectedDate={selectedDate} onDateChange={setSelectedDate} />
+            <CheckInPanel 
+                audiences={audiences} 
+                startDate={startDate} 
+                endDate={endDate}
+                onStartDateChange={setStartDate}
+                onEndDateChange={setEndDate}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3">

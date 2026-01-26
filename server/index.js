@@ -24,13 +24,24 @@ const pool = new Pool({
 // Rota de API para buscar as audiências
 app.get('/audiencias', async (req, res) => {
   try {
-    const { date } = req.query;
+    const { startDate, endDate } = req.query;
     
     let query;
     let queryParams = [];
     
-    if (date) {
-      // Se uma data específica foi fornecida (formato YYYY-MM-DD)
+    if (startDate && endDate) {
+      // Range de datas (formato YYYY-MM-DD)
+      query = `
+        SELECT *
+        FROM audiencias_check
+        WHERE "processo.pasta" IS NOT NULL
+          AND to_date("data", 'DD/MM/YYYY') >= $1
+          AND to_date("data", 'DD/MM/YYYY') <= $2
+        ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC;
+      `;
+      queryParams = [startDate, endDate];
+    } else if (startDate) {
+      // Data única
       query = `
         SELECT *
         FROM audiencias_check
@@ -38,7 +49,7 @@ app.get('/audiencias', async (req, res) => {
           AND to_date("data", 'DD/MM/YYYY') = $1
         ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC;
       `;
-      queryParams = [date];
+      queryParams = [startDate];
     } else {
       // Se nenhuma data foi fornecida, retorna TODAS as audiências
       query = `

@@ -38,11 +38,19 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
 
 interface CheckInPanelProps {
     audiences: any[];
-    selectedDate: Date;
-    onDateChange: (date: Date) => void;
+    startDate: Date;
+    endDate: Date;
+    onStartDateChange: (date: Date) => void;
+    onEndDateChange: (date: Date) => void;
 }
 
-const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [], selectedDate, onDateChange }) => {
+const CheckInPanel: React.FC<CheckInPanelProps> = ({ 
+    audiences = [], 
+    startDate, 
+    endDate,
+    onStartDateChange,
+    onEndDateChange
+}) => {
     const [showDatePicker, setShowDatePicker] = React.useState(false);
     const datePickerRef = React.useRef<HTMLDivElement>(null);
     
@@ -95,50 +103,85 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [], selectedDat
     }, [audiences]);
 
     // Formata a data para exibição
-    const formatDate = (date: Date | undefined) => {
-        if (!date) return 'Hoje';
+    const formatDateRange = () => {
+        if (!startDate || !endDate) return 'Hoje';
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
         
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const compareDate = new Date(date);
-        compareDate.setHours(0, 0, 0, 0);
         
-        if (compareDate.getTime() === today.getTime()) {
-            return 'Hoje';
+        // Se for o mesmo dia
+        if (start.getTime() === end.getTime()) {
+            if (start.getTime() === today.getTime()) {
+                return 'Hoje';
+            }
+            
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (start.getTime() === yesterday.getTime()) {
+                return 'Ontem';
+            }
+            
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            if (start.getTime() === tomorrow.getTime()) {
+                return 'Amanhã';
+            }
+            
+            return start.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
         }
         
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        if (compareDate.getTime() === yesterday.getTime()) {
-            return 'Ontem';
-        }
-        
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        if (compareDate.getTime() === tomorrow.getTime()) {
-            return 'Amanhã';
-        }
-        
-        return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+        // Range de datas
+        const startStr = start.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        const endStr = end.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        return `${startStr} - ${endStr}`;
     };
 
     // Atalhos de data
     const setToday = () => {
-        onDateChange(new Date());
+        const today = new Date();
+        onStartDateChange(today);
+        onEndDateChange(today);
         setShowDatePicker(false);
     };
 
     const setYesterday = () => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        onDateChange(yesterday);
+        onStartDateChange(yesterday);
+        onEndDateChange(yesterday);
         setShowDatePicker(false);
     };
 
     const setTomorrow = () => {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        onDateChange(tomorrow);
+        onStartDateChange(tomorrow);
+        onEndDateChange(tomorrow);
+        setShowDatePicker(false);
+    };
+
+    const setThisWeek = () => {
+        const today = new Date();
+        const firstDay = new Date(today);
+        firstDay.setDate(today.getDate() - today.getDay()); // Domingo
+        const lastDay = new Date(today);
+        lastDay.setDate(today.getDate() + (6 - today.getDay())); // Sábado
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
+        setShowDatePicker(false);
+    };
+
+    const setThisMonth = () => {
+        const today = new Date();
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
         setShowDatePicker(false);
     };
 
@@ -157,47 +200,87 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [], selectedDat
                         className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
                     >
                         <CalendarIcon />
-                        <span className="ml-2">{formatDate(selectedDate)}</span>
+                        <span className="ml-2">{formatDateRange()}</span>
                     </button>
                     
                     {/* Dropdown do Calendário */}
                     {showDatePicker && (
-                        <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-700">
+                        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-700">
                             <div className="p-4">
                                 {/* Atalhos */}
-                                <div className="flex gap-2 mb-4">
+                                <div className="grid grid-cols-2 gap-2 mb-4">
                                     <button
                                         onClick={setYesterday}
-                                        className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                                     >
                                         Ontem
                                     </button>
                                     <button
                                         onClick={setToday}
-                                        className="flex-1 px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+                                        className="px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
                                     >
                                         Hoje
                                     </button>
                                     <button
                                         onClick={setTomorrow}
-                                        className="flex-1 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
                                     >
                                         Amanhã
                                     </button>
+                                    <button
+                                        onClick={setThisWeek}
+                                        className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                    >
+                                        Esta Semana
+                                    </button>
+                                    <button
+                                        onClick={setThisMonth}
+                                        className="col-span-2 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                    >
+                                        Este Mês
+                                    </button>
                                 </div>
                                 
-                                {/* Input de Data */}
-                                <input
-                                    type="date"
-                                    value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
-                                    onChange={(e) => {
-                                        if (e.target.value) {
-                                            onDateChange(new Date(e.target.value + 'T00:00:00'));
-                                            setShowDatePicker(false);
-                                        }
-                                    }}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
-                                />
+                                {/* Inputs de Data */}
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1 dark:text-slate-300">Data Inicial</label>
+                                        <input
+                                            type="date"
+                                            value={startDate ? startDate.toISOString().split('T')[0] : ''}
+                                            onChange={(e) => {
+                                                if (e.target.value) {
+                                                    const newStart = new Date(e.target.value + 'T00:00:00');
+                                                    onStartDateChange(newStart);
+                                                    // Se a data inicial for maior que a final, ajusta a final
+                                                    if (endDate && newStart > endDate) {
+                                                        onEndDateChange(newStart);
+                                                    }
+                                                }
+                                            }}
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1 dark:text-slate-300">Data Final</label>
+                                        <input
+                                            type="date"
+                                            value={endDate ? endDate.toISOString().split('T')[0] : ''}
+                                            onChange={(e) => {
+                                                if (e.target.value) {
+                                                    const newEnd = new Date(e.target.value + 'T00:00:00');
+                                                    onEndDateChange(newEnd);
+                                                    // Se a data final for menor que a inicial, ajusta a inicial
+                                                    if (startDate && newEnd < startDate) {
+                                                        onStartDateChange(newEnd);
+                                                    }
+                                                }
+                                            }}
+                                            min={startDate ? startDate.toISOString().split('T')[0] : ''}
+                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
