@@ -48,19 +48,19 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({ audiences = [] }) => {
 
         // Check-in Feito = status "CONFIRMADO"
         const done = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
         // Check-in Pendente = status "PENDENTE" ou "ENVIADO"
         const pending = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'PENDENTE' || status === 'ENVIADO';
         }).length;
 
         // Check-in Atrasado = status "ATRASADO"
         const late = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'ATRASADO';
         }).length;
 

@@ -54,19 +54,19 @@ const AudienceSummary: React.FC<AudienceSummaryProps> = ({ audiences = [] }) => 
 
         // Check-in Confirmado = status "CONFIRMADO"
         const confirmed = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
         // Aguardando Resposta = status "PENDENTE" ou "ENVIADO"
         const waiting = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'PENDENTE' || status === 'ENVIADO';
         }).length;
 
         // Necessitam Atenção = status "ATRASADO"
         const attention = audiences.filter(item => {
-            const status = (item.status || '').toUpperCase();
+            const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'ATRASADO';
         }).length;
 

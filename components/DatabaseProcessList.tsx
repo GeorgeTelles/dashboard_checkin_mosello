@@ -59,7 +59,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
         console.log('🔄 DatabaseProcessList recebeu novos dados:', audiences.length, 'registros');
         const formattedData: Process[] = audiences.map((item: any) => {
                     // Cria o advogado dinamicamente a partir dos dados do banco
-                    const lawyerName = item.encarregado_nome || 'Não atribuído';
+                    const lawyerName = item['encarregado.nome'] || 'Não atribuído';
                     const lawyer = {
                         id: lawyerName.toLowerCase().replace(/\s+/g, '-'),
                         name: lawyerName,
@@ -67,17 +67,17 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                     };
                     
                     // Trata o número do processo
-                    const processNumber = item.processo ? item.processo.split(' - ')[0] : 'N/A';
+                    const processNumber = item['processo.pasta'] || 'N/A';
                     
-                    // Trata a data no formato YYYY-MM-DD
-                    const hearingDateStr = item.data_evento ? item.data_evento.split('T')[0] : null;
+                    // Trata a data no formato DD/MM/YYYY
+                    const hearingDateStr = item['data'] || null;
                     let hearingDateFormatted = 'N/A';
                     if (hearingDateStr) {
-                        const parts = hearingDateStr.split('-');
+                        const parts = hearingDateStr.split('/');
                         if (parts.length === 3) {
-                            const year = parseInt(parts[0], 10);
+                            const day = parseInt(parts[0], 10);
                             const month = parseInt(parts[1], 10);
-                            const day = parseInt(parts[2], 10);
+                            const year = parseInt(parts[2], 10);
                             console.log('Date Debug:', { hearingDateStr, year, month, day });
                             const correctDate = new Date(year, month - 1, day);
                             hearingDateFormatted = correctDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -85,14 +85,14 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                     }
                     
                     return {
-                        id: item.checkin_id,
+                        id: item.id,
                         processNumber: processNumber,
                         hearingDate: hearingDateFormatted,
-                        hearingTime: item.hora_evento || 'N/A',
+                        hearingTime: item['hora'] || 'N/A',
                         mainLawyer: lawyer,
-                        checkInStatus: item.status || CheckInStatus.Pendente,
-                        confirmationTime: item.hora_checkin || null,
-                        location: item.local_evento
+                        checkInStatus: item['status_checkin'] || CheckInStatus.Pendente,
+                        confirmationTime: item['hora_checkin'] || null,
+                        location: item['processo.faseatual.vara']
                     };
                 }).filter((p: Process) => p.id);
         

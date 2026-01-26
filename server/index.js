@@ -28,13 +28,13 @@ app.get('/audiencias', async (req, res) => {
       SELECT * FROM (
         SELECT
           *,
-          ROW_NUMBER() OVER (PARTITION BY checkin_id ORDER BY checkin_id) AS rn
+          ROW_NUMBER() OVER (PARTITION BY "id" ORDER BY "id") AS rn
         FROM audiencias_check
-        WHERE processo IS NOT NULL
-          AND data_evento::date = CURRENT_DATE
+        WHERE "processo.pasta" IS NOT NULL
+          AND to_date("data", 'DD/MM/YYYY') = CURRENT_DATE
       ) AS sub
       WHERE sub.rn = 1
-      ORDER BY data_evento DESC, hora_evento DESC
+      ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC
     `);
     res.json(rows);
   } catch (err) {
