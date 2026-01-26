@@ -1,7 +1,7 @@
 
 export enum CheckInStatus {
   Feito = "Feito",
-  Pendente = "Pendente",
+  Pendente = "A Confirmar",
   Atrasado = "Atrasado",
   Nulo = "-"
 }
@@ -19,7 +19,7 @@ export interface Hearing {
   time: string;
   location: string;
   status: 'Em andamento' | 'Aguardando início' | 'Próximo';
-  confirmation: 'Confirmado' | 'Pendente';
+  confirmation: 'Confirmado' | 'A Confirmar';
 }
 
 export interface Process {

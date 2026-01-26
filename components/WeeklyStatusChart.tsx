@@ -32,7 +32,7 @@ const WeeklyStatusChart = () => {
                         />
                         <Legend iconType="circle" iconSize={8} wrapperStyle={{paddingTop: '20px'}} />
                         <Bar dataKey="Atrasado" fill="#ef4444" name="Atrasado" radius={[4, 4, 0, 0]} barSize={12} />
-                        <Bar dataKey="Pendente" fill="#f97316" name="Pendente" radius={[4, 4, 0, 0]} barSize={12} />
+                        <Bar dataKey="A Confirmar" fill="#f97316" name="A Confirmar" radius={[4, 4, 0, 0]} barSize={12} />
                         <Bar dataKey="Feito" fill="#22c55e" name="Feito" radius={[4, 4, 0, 0]} barSize={12} />
                     </BarChart>
                 </ResponsiveContainer>

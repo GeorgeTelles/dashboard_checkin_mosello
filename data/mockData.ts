@@ -21,12 +21,12 @@ export const checkInStats = {
 };
 
 export const weeklyChartData = [
-  { day: 'Seg', Feito: 15, Pendente: 3, Atrasado: 1 },
-  { day: 'Ter', Feito: 12, Pendente: 5, Atrasado: 2 },
-  { day: 'Qua', Feito: 18, Pendente: 4, Atrasado: 1 },
-  { day: 'Qui', Feito: 13, Pendente: 5, Atrasado: 2 },
-  { day: 'Sex', Feito: 20, Pendente: 2, Atrasado: 0 },
-  { day: 'Sab', Feito: 8, Pendente: 1, Atrasado: 0 },
+  { day: 'Seg', Feito: 15, 'A Confirmar': 3, Atrasado: 1 },
+  { day: 'Ter', Feito: 12, 'A Confirmar': 5, Atrasado: 2 },
+  { day: 'Qua', Feito: 18, 'A Confirmar': 4, Atrasado: 1 },
+  { day: 'Qui', Feito: 13, 'A Confirmar': 5, Atrasado: 2 },
+  { day: 'Sex', Feito: 20, 'A Confirmar': 2, Atrasado: 0 },
+  { day: 'Sab', Feito: 8, 'A Confirmar': 1, Atrasado: 0 },
 ];
 
 export const evolutionChartData = [
@@ -48,7 +48,7 @@ export const audienceSummary = {
 export const happeningNowHearings: Hearing[] = [
   { id: 'h1', processNumber: '0001234-56.2024.8.26.0100', lawyer: lawyers[0], time: '09:30', location: 'Fórum Central - Sala 201', status: 'Em andamento', confirmation: 'Confirmado' },
   { id: 'h2', processNumber: '0002345-67.2024.8.26.0100', lawyer: lawyers[1], time: '10:00', location: 'Fórum Central - Sala 305', status: 'Aguardando início', confirmation: 'Confirmado' },
-  { id: 'h3', processNumber: '0003456-78.2024.8.26.0100', lawyer: lawyers[2], time: '10:30', location: 'Fórum da Barra Funda - Sala 102', status: 'Próximo', confirmation: 'Pendente' },
+  { id: 'h3', processNumber: '0003456-78.2024.8.26.0100', lawyer: lawyers[2], time: '10:30', location: 'Fórum da Barra Funda - Sala 102', status: 'Próximo', confirmation: 'A Confirmar' },
 ];
 
 export const processList: Process[] = [

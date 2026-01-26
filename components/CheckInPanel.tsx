@@ -64,10 +64,10 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
-        // Check-in Pendente = status "PENDENTE" ou "ENVIADO"
+        // Check-in A Confirmar = status "A CONFIRMAR" ou "ENVIADO"
         const pending = audiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
-            return status === 'PENDENTE' || status === 'ENVIADO';
+            return status === 'A CONFIRMAR' || status === 'ENVIADO';
         }).length;
 
         // Check-in Atrasado = status "ATRASADO"

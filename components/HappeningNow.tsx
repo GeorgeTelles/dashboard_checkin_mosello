@@ -13,7 +13,7 @@ const statusColors: { [key in Hearing['status']]: string } = {
 };
 const confirmationColors: { [key in Hearing['confirmation']]: string } = {
     'Confirmado': 'bg-green-100 text-green-700',
-    'Pendente': 'bg-orange-100 text-orange-700',
+    'A Confirmar': 'bg-orange-100 text-orange-700',
 };
 
 const HearingCard: React.FC<{ hearing: Hearing }> = ({ hearing }) => (

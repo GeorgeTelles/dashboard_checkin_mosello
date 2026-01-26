@@ -10,20 +10,20 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | nu
     const normalizedStatus = (s: string): CheckInStatus => {
         s = s.toUpperCase();
         if (s === 'FEITO' || s === 'REALIZADO' || s === 'CONFIRMADO') return CheckInStatus.Feito;
-        if (s === 'PENDENTE' || s === 'ENVIADO') return CheckInStatus.Pendente;
+        if (s === 'A CONFIRMAR' || s === 'ENVIADO') return CheckInStatus.Pendente;
         if (s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
         return CheckInStatus.Nulo; // Default.
     };
 
     const statusEnum = typeof status === 'string' ? normalizedStatus(status) : status;
     
-    // Exibe "Pendente" quando o status for "ENVIADO"
+    // Exibe "A Confirmar" quando o status for "ENVIADO"
     // Exibe "Cancelado" quando o status for "NEGATIVA"
     let displayStatus = status;
     if (typeof status === 'string') {
         const upperStatus = status.toUpperCase();
         if (upperStatus === 'ENVIADO') {
-            displayStatus = 'Pendente';
+            displayStatus = 'A Confirmar';
         } else if (upperStatus === 'NEGATIVA') {
             displayStatus = 'Cancelado';
         }

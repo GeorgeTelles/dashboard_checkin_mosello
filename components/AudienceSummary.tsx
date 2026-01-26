@@ -58,10 +58,10 @@ const AudienceSummary: React.FC<AudienceSummaryProps> = ({ audiences = [] }) => 
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
-        // Aguardando Resposta = status "PENDENTE" ou "ENVIADO"
+        // Aguardando Resposta = status "A CONFIRMAR" ou "ENVIADO"
         const waiting = audiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
-            return status === 'PENDENTE' || status === 'ENVIADO';
+            return status === 'A CONFIRMAR' || status === 'ENVIADO';
         }).length;
 
         // Necessitam Atenção = status "ATRASADO"

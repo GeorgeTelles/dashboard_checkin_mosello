@@ -80,7 +80,7 @@ const ReminderModal: React.FC<ReminderModalProps> = ({ onClose, processes }) => 
 
                 <div className="flex-1 p-6 overflow-y-auto">
                     <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">
-                        Selecione as audiências com status "Pendente" ou "Atrasado" para as quais deseja reenviar o lembrete de check-in.
+                        Selecione as audiências com status "A Confirmar" ou "Atrasado" para as quais deseja reenviar o lembrete de check-in.
                     </p>
                     
                     <div className="border border-slate-200 dark:border-slate-700 rounded-lg">
@@ -117,7 +117,7 @@ const ReminderModal: React.FC<ReminderModalProps> = ({ onClose, processes }) => 
                                 </li>
                             )) : (
                                 <li className="p-4 text-center text-sm text-gray-500 dark:text-slate-400">
-                                    Nenhuma audiência pendente ou atrasada para enviar lembrete.
+                                    Nenhuma audiência a confirmar ou atrasada para enviar lembrete.
                                 </li>
                             )}
                         </ul>
