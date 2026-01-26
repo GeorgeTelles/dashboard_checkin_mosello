@@ -164,15 +164,15 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                         <p className="mt-1">{processItem.hearingDate} <br/> {processItem.hearingTime}</p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do Check-in</p>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do<br/>Check-in</p>
                                         <p className="mt-1">{processItem.confirmationTime || '-'}</p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Status Check-out</p>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Status<br/>Check-out</p>
                                         <p className="mt-1"><StatusBadge status={processItem.checkOutStatus} /></p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do Check-out</p>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do<br/>Check-out</p>
                                         <p className="mt-1">{processItem.checkOutTime || '-'}</p>
                                     </div>
                                 </div>
