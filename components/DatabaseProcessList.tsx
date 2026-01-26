@@ -3,11 +3,7 @@ import { CheckInStatus, type Process } from '../types';
 import ReminderModal from './ReminderModal';
 import { lawyers } from '../data/mockData'; // Using mock lawyers for now
 
-const StatusBadge: React.FC<{ status: CheckInStatus | string | null }> = ({ status }) => {
-    // Se o status for null, undefined ou vazio, exibe apenas "-" em cinza
-    if (!status || status === 'null' || status === '') {
-        return <span className="text-gray-400 text-xs">-</span>;
-    }
+const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) => {
     
     const baseClasses = 'px-2.5 py-0.5 text-xs font-semibold rounded-full inline-block';
     
@@ -16,7 +12,7 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string | null }> = ({ stat
         if (s === 'FEITO' || s === 'REALIZADO' || s === 'CONFIRMADO') return CheckInStatus.Feito;
         if (s === 'PENDENTE' || s === 'ENVIADO') return CheckInStatus.Pendente;
         if (s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
-        return CheckInStatus.Pendente; // Default
+        return CheckInStatus.Nulo; // Default
     };
 
     const statusEnum = typeof status === 'string' ? normalizedStatus(status) : status;
@@ -97,6 +93,8 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                         mainLawyer: lawyer,
                         checkInStatus: item['status_checkin'] || CheckInStatus.Pendente,
                         confirmationTime: item['hora_checkin'] || null,
+                        checkOutStatus: item['status_checkout'] || CheckInStatus.Pendente,
+                        checkOutTime: item['hora_checkout'] || null,
                         location: item['processo.faseatual.vara']
                     };
                 }).filter((p: Process) => p.id);
@@ -133,7 +131,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                     </div>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 dark:scrollbar-thumb-slate-600 dark:scrollbar-track-slate-800">
                     {/* Mobile Card View */}
                     <div className="md:hidden grid grid-cols-1 gap-4">
                         {processList.map((processItem) => (
@@ -157,8 +155,16 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                         <p className="mt-1">{processItem.hearingDate} <br/> {processItem.hearingTime}</p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Confirmação</p>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do Check-in</p>
                                         <p className="mt-1">{processItem.confirmationTime || '-'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Status Check-out</p>
+                                        <p className="mt-1"><StatusBadge status={processItem.checkOutStatus} /></p>
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-wider dark:text-slate-300">Hora do Check-out</p>
+                                        <p className="mt-1">{processItem.checkOutTime || '-'}</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-end pt-2">
@@ -179,7 +185,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                     <th scope="col" className="px-6 py-3">Local</th>
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
                                     <th scope="col" className="px-6 py-3">Status Check-in</th>
-                                    <th scope="col" className="px-6 py-3">Confirmação</th>
+                                    <th scope="col" className="px-6 py-3">Hora do Check-in</th>
+                                    <th scope="col" className="px-6 py-3">Status Check-out</th>
+                                    <th scope="col" className="px-6 py-3">Hora do Check-out</th>
                                     <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
@@ -200,6 +208,10 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                             <StatusBadge status={processItem.checkInStatus} />
                                         </td>
                                         <td className="px-6 py-4">{processItem.confirmationTime || '-'}</td>
+                                        <td className="px-6 py-4">
+                                            <StatusBadge status={processItem.checkOutStatus} />
+                                        </td>
+                                        <td className="px-6 py-4">{processItem.checkOutTime || '-'}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button><MoreIcon /></button>
                                         </td>

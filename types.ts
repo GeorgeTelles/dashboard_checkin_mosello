@@ -3,6 +3,7 @@ export enum CheckInStatus {
   Feito = "Feito",
   Pendente = "Pendente",
   Atrasado = "Atrasado",
+  Nulo = "-"
 }
 
 export interface Lawyer {
@@ -30,4 +31,19 @@ export interface Process {
   mainLawyer: Lawyer;
   checkInStatus: CheckInStatus;
   confirmationTime: string | null;
+  checkOutStatus: CheckInStatus;
+  checkOutTime: string | null;
+}
+
+export interface Audience {
+  id: string;
+  'processo.pasta': string;
+  data: string;
+  hora: string;
+  'encarregado.nome': string;
+  status_checkin: string;
+  hora_checkin?: string;
+  status_checkout?: string;
+  hora_checkout?: string;
+  'processo.faseatual.vara'?: string;
 }
