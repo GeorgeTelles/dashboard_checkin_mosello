@@ -3,7 +3,7 @@ import { CheckInStatus, type Process } from '../types';
 import ReminderModal from './ReminderModal';
 import { lawyers } from '../data/mockData'; // Using mock lawyers for now
 
-const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) => {
+const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | null }> = ({ status, time }) => {
     
     const baseClasses = 'px-2.5 py-0.5 text-xs font-semibold rounded-full inline-block';
     
@@ -35,7 +35,15 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) =
         [CheckInStatus.Atrasado]: 'bg-red-100 text-red-800',
         [CheckInStatus.Nulo]: 'bg-gray-100 text-gray-800',
     };
-    return <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{displayStatus}</span>;
+    
+    return (
+        <div className="flex flex-col">
+            <span className={`${baseClasses} ${statusClasses[statusEnum]}`}>{displayStatus}</span>
+            {time && statusEnum !== CheckInStatus.Nulo && (
+                <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">{time}</span>
+            )}
+        </div>
+    );
 };
 
 const EmailIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>);
@@ -164,16 +172,16 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                         <p className="mt-1">{processItem.hearingDate} <br/> {processItem.hearingTime}</p>
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-tight dark:text-slate-300">Hora<br/>Checkin</p>
-                                        <p className="mt-1">{processItem.confirmationTime || '-'}</p>
+                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-tight dark:text-slate-300">Status<br/>Checkin</p>
+                                        <div className="mt-1">
+                                            <StatusBadge status={processItem.checkInStatus} time={processItem.confirmationTime} />
+                                        </div>
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-600 text-xs uppercase tracking-tight dark:text-slate-300">Status<br/>Checkout</p>
-                                        <p className="mt-1"><StatusBadge status={processItem.checkOutStatus} /></p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-gray-600 text-xs uppercase tracking-tight dark:text-slate-300">Hora<br/>Checkout</p>
-                                        <p className="mt-1">{processItem.checkOutTime || '-'}</p>
+                                        <div className="mt-1">
+                                            <StatusBadge status={processItem.checkOutStatus} time={processItem.checkOutTime} />
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex justify-end pt-2">
@@ -194,9 +202,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                     <th scope="col" className="px-6 py-3">Local</th>
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
                                     <th scope="col" className="px-6 py-3">Status Checkin</th>
-                                    <th scope="col" className="px-6 py-3">Hora Checkin</th>
                                     <th scope="col" className="px-6 py-3">Status Checkout</th>
-                                    <th scope="col" className="px-6 py-3">Hora Checkout</th>
                                     <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
@@ -214,13 +220,11 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <StatusBadge status={processItem.checkInStatus} />
+                                            <StatusBadge status={processItem.checkInStatus} time={processItem.confirmationTime} />
                                         </td>
-                                        <td className="px-6 py-4">{processItem.confirmationTime || '-'}</td>
                                         <td className="px-6 py-4">
-                                            <StatusBadge status={processItem.checkOutStatus} />
+                                            <StatusBadge status={processItem.checkOutStatus} time={processItem.checkOutTime} />
                                         </td>
-                                        <td className="px-6 py-4">{processItem.checkOutTime || '-'}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button><MoreIcon /></button>
                                         </td>
