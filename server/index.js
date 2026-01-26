@@ -18,7 +18,7 @@ const pool = new Pool({
   database: process.env.PG_DATABASE || 'checkin',
   user: process.env.PG_USER || 'admin',
   password: process.env.MOSELLO_PG_ADMIN_PASSWORD,
-  ssl: false,
+  ssl: true,
 });
 
 // Rota de API para buscar as audiências
