@@ -72,7 +72,13 @@ const OnePage = () => {
     <div className="flex flex-col lg:flex-row h-full w-full gap-6 p-4 md:p-6 overflow-hidden">
       {/* Main Content: Process List */}
       <div className="lg:w-2/3 h-full flex flex-col min-h-0 gap-6">
-        <DatabaseProcessList audiences={audiences} />
+        <DatabaseProcessList 
+          audiences={audiences}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={handleStartDateChange}
+          onEndDateChange={handleEndDateChange}
+        />
       </div>
 
       {/* Sidebar content: Cards */}

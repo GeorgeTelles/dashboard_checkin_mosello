@@ -49,15 +49,107 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | nu
 const EmailIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>);
 const SortIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>);
 const MoreIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>);
+const CalendarIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>);
 
 
 interface DatabaseProcessListProps {
     audiences: any[];
+    startDate: Date | null;
+    endDate: Date | null;
+    onStartDateChange: (date: Date) => void;
+    onEndDateChange: (date: Date) => void;
 }
 
-const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [] }) => {
+const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ 
+    audiences = [], 
+    startDate, 
+    endDate, 
+    onStartDateChange, 
+    onEndDateChange 
+}) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
+    const [showDatePicker, setShowDatePicker] = React.useState(false);
+    const datePickerRef = React.useRef<HTMLDivElement>(null);
+
+    // Fecha o dropdown ao clicar fora
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+                setShowDatePicker(false);
+            }
+        };
+        
+        if (showDatePicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showDatePicker]);
+
+    const formatDateRange = () => {
+        if (!startDate || !endDate) return 'Selecione o período';
+        
+        const formatDate = (date: Date) => {
+            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        };
+        
+        if (startDate.toDateString() === endDate.toDateString()) {
+            return formatDate(startDate);
+        }
+        
+        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    };
+
+    const setToday = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        onStartDateChange(today);
+        onEndDateChange(today);
+        setShowDatePicker(false);
+    };
+
+    const setYesterday = () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setHours(0, 0, 0, 0);
+        onStartDateChange(yesterday);
+        onEndDateChange(yesterday);
+        setShowDatePicker(false);
+    };
+
+    const setTomorrow = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        onStartDateChange(tomorrow);
+        onEndDateChange(tomorrow);
+        setShowDatePicker(false);
+    };
+
+    const setThisWeek = () => {
+        const today = new Date();
+        const firstDay = new Date(today.setDate(today.getDate() - today.getDay()));
+        const lastDay = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+        firstDay.setHours(0, 0, 0, 0);
+        lastDay.setHours(23, 59, 59, 999);
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
+        setShowDatePicker(false);
+    };
+
+    const setThisMonth = () => {
+        const today = new Date();
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        firstDay.setHours(0, 0, 0, 0);
+        lastDay.setHours(23, 59, 59, 999);
+        onStartDateChange(firstDay);
+        onEndDateChange(lastDay);
+        setShowDatePicker(false);
+    };
 
     useEffect(() => {
         if (!audiences || audiences.length === 0) {
@@ -134,17 +226,95 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                         <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Processos</h2>
                         <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de checkin dos advogados</p>
                     </div>
-                    <div className="flex items-center space-x-3">
-                        <button 
-                            onClick={() => setIsReminderModalOpen(true)}
-                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600">
-                            <EmailIcon />
-                            Enviar Lembrete
+                    
+                    {/* Filtro de Data */}
+                    <div className="relative" ref={datePickerRef}>
+                        <button
+                            onClick={() => setShowDatePicker(!showDatePicker)}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
+                        >
+                            <CalendarIcon />
+                            <span className="ml-2">{formatDateRange()}</span>
                         </button>
-                        <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600">
-                            <SortIcon />
-                            Ordenar
-                        </button>
+                        
+                        {/* Dropdown do Calendário */}
+                        {showDatePicker && (
+                            <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-700">
+                                <div className="p-4">
+                                    {/* Atalhos */}
+                                    <div className="grid grid-cols-2 gap-2 mb-4">
+                                        <button
+                                            onClick={setYesterday}
+                                            className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        >
+                                            Ontem
+                                        </button>
+                                        <button
+                                            onClick={setToday}
+                                            className="px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700"
+                                        >
+                                            Hoje
+                                        </button>
+                                        <button
+                                            onClick={setTomorrow}
+                                            className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        >
+                                            Amanhã
+                                        </button>
+                                        <button
+                                            onClick={setThisWeek}
+                                            className="px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        >
+                                            Esta Semana
+                                        </button>
+                                        <button
+                                            onClick={setThisMonth}
+                                            className="col-span-2 px-3 py-2 text-xs font-medium text-gray-700 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                                        >
+                                            Este Mês
+                                        </button>
+                                    </div>
+                                    
+                                    {/* Inputs de Data */}
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-700 mb-1 dark:text-slate-300">Data Inicial</label>
+                                            <input
+                                                type="date"
+                                                value={startDate ? startDate.toISOString().split('T')[0] : ''}
+                                                onChange={(e) => {
+                                                    if (e.target.value) {
+                                                        const newStart = new Date(e.target.value + 'T00:00:00');
+                                                        onStartDateChange(newStart);
+                                                        if (endDate && newStart > endDate) {
+                                                            onEndDateChange(newStart);
+                                                        }
+                                                    }
+                                                }}
+                                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-700 mb-1 dark:text-slate-300">Data Final</label>
+                                            <input
+                                                type="date"
+                                                value={endDate ? endDate.toISOString().split('T')[0] : ''}
+                                                onChange={(e) => {
+                                                    if (e.target.value) {
+                                                        const newEnd = new Date(e.target.value + 'T23:59:59');
+                                                        onEndDateChange(newEnd);
+                                                        if (startDate && newEnd < startDate) {
+                                                            onStartDateChange(newEnd);
+                                                        }
+                                                    }
+                                                }}
+                                                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-200"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 
