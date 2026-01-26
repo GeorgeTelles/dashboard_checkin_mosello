@@ -124,7 +124,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                     <div>
                         <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Processos</h2>
-                        <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de check-in dos advogados</p>
+                        <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de checkin dos advogados</p>
                     </div>
                     <div className="flex items-center space-x-3">
                         <button 
@@ -193,10 +193,10 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ audiences = [
                                     <th scope="col" className="px-6 py-3">Hora da Audiência</th>
                                     <th scope="col" className="px-6 py-3">Local</th>
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
-                                    <th scope="col" className="px-6 py-3">Status Check-in</th>
-                                    <th scope="col" className="px-6 py-3">Hora do Check-in</th>
-                                    <th scope="col" className="px-6 py-3">Status Check-out</th>
-                                    <th scope="col" className="px-6 py-3">Hora do Check-out</th>
+                                    <th scope="col" className="px-6 py-3">Status Checkin</th>
+                                    <th scope="col" className="px-6 py-3">Hora do Checkin</th>
+                                    <th scope="col" className="px-6 py-3">Status Checkout</th>
+                                    <th scope="col" className="px-6 py-3">Hora do Checkout</th>
                                     <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
