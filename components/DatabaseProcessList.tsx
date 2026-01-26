@@ -12,7 +12,7 @@ const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) =
         if (s === 'FEITO' || s === 'REALIZADO' || s === 'CONFIRMADO') return CheckInStatus.Feito;
         if (s === 'PENDENTE' || s === 'ENVIADO') return CheckInStatus.Pendente;
         if (s === 'ATRASADO' || s === 'NEGATIVA' || s === 'CANCELADO') return CheckInStatus.Atrasado;
-        return CheckInStatus.Nulo; // Default
+        return CheckInStatus.Nulo; // Default.
     };
 
     const statusEnum = typeof status === 'string' ? normalizedStatus(status) : status;
