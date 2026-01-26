@@ -3,7 +3,12 @@ import { CheckInStatus, type Process } from '../types';
 import ReminderModal from './ReminderModal';
 import { lawyers } from '../data/mockData'; // Using mock lawyers for now
 
-const StatusBadge: React.FC<{ status: CheckInStatus | string }> = ({ status }) => {
+const StatusBadge: React.FC<{ status: CheckInStatus | string | null }> = ({ status }) => {
+    // Se o status for null, undefined ou vazio, exibe apenas "-" em cinza
+    if (!status || status === 'null' || status === '') {
+        return <span className="text-gray-400 text-xs">-</span>;
+    }
+    
     const baseClasses = 'px-2.5 py-0.5 text-xs font-semibold rounded-full inline-block';
     
     const normalizedStatus = (s: string): CheckInStatus => {
