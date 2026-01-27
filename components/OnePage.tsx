@@ -113,7 +113,7 @@ const OnePage = () => {
             />
         </div>
         {/* <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-            <AudienceSummary audiences={audiences} />
+            <AudienceSummary audiences={audiences} selectedGroups={selectedGroups} />
         </div> */}
         {/* <HappeningNow /> */}
       </div>

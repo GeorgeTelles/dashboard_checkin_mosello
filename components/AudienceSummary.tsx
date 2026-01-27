@@ -38,40 +38,63 @@ const ProgressCard: React.FC<ProgressCardProps> = ({ icon, title, value, total, 
     );
 };
 
+// Mapeamento de grupos que devem ser consolidados
+const GROUP_MAPPING: { [key: string]: string } = {
+    'Controle Cível - PF': 'Controle Cível',
+    'Controle Cível Select': 'Controle Cível'
+};
+
 interface AudienceSummaryProps {
     audiences: any[];
+    selectedGroups?: string[];
 }
 
-const AudienceSummary: React.FC<AudienceSummaryProps> = ({ audiences = [] }) => {
+const AudienceSummary: React.FC<AudienceSummaryProps> = ({ audiences = [], selectedGroups }) => {
     // Calcula as métricas dinamicamente baseado nos dados do BD
     const audienceSummary = useMemo(() => {
         if (!audiences || audiences.length === 0) {
             return { today: 0, confirmed: 0, waiting: 0, attention: 0 };
         }
 
-        // Audiências Hoje = total de linhas na tabela após deduplicação
-        const today = audiences.length;
+        // Filtra por grupo de usuário se fornecido
+        let filteredAudiences = audiences;
+        if (selectedGroups && selectedGroups.length > 0) {
+            filteredAudiences = audiences.filter((item: any) => {
+                const groupId = item.grupousuarioid;
+                if (!groupId) return true; // Se não tem grupo, mostra
+                
+                // Normaliza o nome do grupo usando o mapeamento
+                const normalizedGroup = GROUP_MAPPING[groupId] || groupId;
+                return selectedGroups.includes(normalizedGroup);
+            });
+        } else if (selectedGroups && selectedGroups.length === 0) {
+            // Se selectedGroups está vazio, não mostra nada
+            return { today: 0, confirmed: 0, waiting: 0, attention: 0 };
+        }
+
+        // Audiências Hoje = total de linhas na tabela após deduplicação e filtro
+        const today = filteredAudiences.length;
 
         // Check-in Confirmado = status "CONFIRMADO"
-        const confirmed = audiences.filter(item => {
+        const confirmed = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
         // Aguardando Resposta = status "A CONFIRMAR" ou "ENVIADO"
-        const waiting = audiences.filter(item => {
+        const waiting = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'A CONFIRMAR' || status === 'ENVIADO';
         }).length;
 
         // Necessitam Atenção = status "ATRASADO"
-        const attention = audiences.filter(item => {
+        const attention = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'ATRASADO';
         }).length;
 
         return { today, confirmed, waiting, attention };
-    }, [audiences]);
+    }, [audiences, selectedGroups]);
 
     return (
         <div>

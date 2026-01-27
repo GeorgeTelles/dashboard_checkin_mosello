@@ -113,7 +113,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <AudienceSummary audiences={audiences} />
+            <AudienceSummary audiences={audiences} selectedGroups={selectedGroups} />
             <HappeningNow />
             <DatabaseProcessList 
                 audiences={audiences} 
