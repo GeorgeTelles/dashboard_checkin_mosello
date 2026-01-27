@@ -1,16 +1,27 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import CheckInPanel from './CheckInPanel';
 import AudienceSummary from './AudienceSummary';
 import DatabaseProcessList from './DatabaseProcessList';
 import HappeningNow from './HappeningNow';
 import { Audience } from '../types';
 
+// Grupos de usuário disponíveis
+const USER_GROUPS = [
+    'Controle Contencioso Imobiliário/Agrário',
+    'Controle Cível',
+    'Controle Criminal',
+    'Controle Tributário e Empresarial',
+    'Controle Trabalhista',
+    'Controle Contencioso Ambiental'
+];
+
 const OnePage = () => {
   const [audiences, setAudiences] = useState<Audience[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date>(new Date()); // Padrão: hoje
   const [endDate, setEndDate] = useState<Date>(new Date()); // Padrão: hoje
+  const [selectedGroups, setSelectedGroups] = useState<string[]>(() => [...USER_GROUPS]);
 
   // Handlers com logs
   const handleStartDateChange = (date: Date) => {
@@ -22,6 +33,11 @@ const OnePage = () => {
     console.log('🔄 OnePage: endDate mudou para:', date);
     setEndDate(date);
   };
+  
+  const handleSelectedGroupsChange = useCallback((newGroups: string[]) => {
+    console.log('📝 OnePage: selectedGroups mudou para:', newGroups);
+    setSelectedGroups(newGroups);
+  }, []);
 
   useEffect(() => {
     const fetchAudiences = async () => {
@@ -78,6 +94,8 @@ const OnePage = () => {
           endDate={endDate}
           onStartDateChange={handleStartDateChange}
           onEndDateChange={handleEndDateChange}
+          selectedGroups={selectedGroups}
+          onSelectedGroupsChange={handleSelectedGroupsChange}
         />
       </div>
 
@@ -91,6 +109,7 @@ const OnePage = () => {
                 endDate={endDate}
                 onStartDateChange={handleStartDateChange}
                 onEndDateChange={handleEndDateChange}
+                selectedGroups={selectedGroups}
             />
         </div>
         {/* <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
