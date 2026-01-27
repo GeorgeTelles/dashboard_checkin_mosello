@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import CheckInPanel from './CheckInPanel';
 import WeeklyStatusChart from './WeeklyStatusChart';
 import AudienceEvolutionChart from './AudienceEvolutionChart';
@@ -33,6 +33,12 @@ const Dashboard = () => {
     useEffect(() => {
         console.log('🔄 selectedGroups mudou para:', selectedGroups);
     }, [selectedGroups]);
+    
+    // Cria uma função estável para atualizar os grupos
+    const handleSelectedGroupsChange = useCallback((newGroups: string[]) => {
+        console.log('📝 handleSelectedGroupsChange chamado com:', newGroups);
+        setSelectedGroups(newGroups);
+    }, []);
 
     useEffect(() => {
         const fetchAudiences = async () => {
@@ -114,7 +120,7 @@ const Dashboard = () => {
                 onStartDateChange={setStartDate}
                 onEndDateChange={setEndDate}
                 selectedGroups={selectedGroups}
-                onSelectedGroupsChange={setSelectedGroups}
+                onSelectedGroupsChange={handleSelectedGroupsChange}
             />
         </div>
     );

@@ -87,6 +87,12 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     selectedGroups = USER_GROUPS, // Valor padrão
     onSelectedGroupsChange
 }) => {
+    // Log para debug
+    console.log('🔍 DatabaseProcessList renderizado');
+    console.log('  - selectedGroups:', selectedGroups);
+    console.log('  - onSelectedGroupsChange tipo:', typeof onSelectedGroupsChange);
+    console.log('  - onSelectedGroupsChange:', onSelectedGroupsChange);
+    
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
     const [showDatePicker, setShowDatePicker] = React.useState(false);
