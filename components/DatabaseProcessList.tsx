@@ -60,6 +60,22 @@ interface DatabaseProcessListProps {
     onEndDateChange: (date: Date) => void;
 }
 
+// Grupos de usuário disponíveis
+const USER_GROUPS = [
+    'Controle Contencioso Imobiliário/Agrário',
+    'Controle Cível',
+    'Controle Criminal',
+    'Controle Tributário e Empresarial',
+    'Controle Trabalhista',
+    'Controle Contencioso Ambiental'
+];
+
+// Mapeamento de grupos que devem ser consolidados
+const GROUP_MAPPING: { [key: string]: string } = {
+    'Controle Cível - PF': 'Controle Cível',
+    'Controle Cível Select': 'Controle Cível'
+};
+
 const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ 
     audiences = [], 
     startDate, 
@@ -71,23 +87,31 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     const [processList, setProcessList] = useState<Process[]>([]);
     const [showDatePicker, setShowDatePicker] = React.useState(false);
     const datePickerRef = React.useRef<HTMLDivElement>(null);
+    
+    // Estados para o filtro de grupo de usuário
+    const [selectedGroups, setSelectedGroups] = useState<string[]>(USER_GROUPS);
+    const [showGroupFilter, setShowGroupFilter] = React.useState(false);
+    const groupFilterRef = React.useRef<HTMLDivElement>(null);
 
-    // Fecha o dropdown ao clicar fora
+    // Fecha os dropdowns ao clicar fora
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
                 setShowDatePicker(false);
             }
+            if (groupFilterRef.current && !groupFilterRef.current.contains(event.target as Node)) {
+                setShowGroupFilter(false);
+            }
         };
         
-        if (showDatePicker) {
+        if (showDatePicker || showGroupFilter) {
             document.addEventListener('mousedown', handleClickOutside);
         }
         
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showDatePicker]);
+    }, [showDatePicker, showGroupFilter]);
 
     const formatDateRange = () => {
         if (!startDate || !endDate) return 'Selecione o período';
@@ -159,7 +183,18 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
         }
         
         console.log('🔄 DatabaseProcessList recebeu novos dados:', audiences.length, 'registros');
-        const formattedData: Process[] = audiences.map((item: any) => {
+        
+        // Filtra por grupo de usuário antes de formatar
+        const filteredAudiences = audiences.filter((item: any) => {
+            const groupId = item.grupousuarioid;
+            if (!groupId) return true; // Se não tem grupo, mostra
+            
+            // Normaliza o nome do grupo usando o mapeamento
+            const normalizedGroup = GROUP_MAPPING[groupId] || groupId;
+            return selectedGroups.includes(normalizedGroup);
+        });
+        
+        const formattedData: Process[] = filteredAudiences.map((item: any) => {
                     // Cria o advogado dinamicamente a partir dos dados do banco
                     const lawyerName = item['encarregado.nome'] || 'Não atribuído';
                     const lawyer = {
@@ -216,7 +251,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
         });
         
         setProcessList(formattedData);
-    }, [audiences]);
+    }, [audiences, selectedGroups]);
 
     return (
         <>
@@ -227,8 +262,76 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                         <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de checkin dos advogados</p>
                     </div>
                     
-                    {/* Filtro de Data */}
-                    <div className="relative" ref={datePickerRef}>
+                    <div className="flex gap-2">
+                        {/* Filtro de Grupo de Usuário */}
+                        <div className="relative" ref={groupFilterRef}>
+                            <button
+                                onClick={() => setShowGroupFilter(!showGroupFilter)}
+                                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                <span className="ml-2">
+                                    {selectedGroups.length === USER_GROUPS.length 
+                                        ? 'Todos os Grupos' 
+                                        : selectedGroups.length === 1 
+                                        ? selectedGroups[0].replace('Controle ', '')
+                                        : `${selectedGroups.length} Grupos`}
+                                </span>
+                            </button>
+                            
+                            {/* Dropdown de Grupos */}
+                            {showGroupFilter && (
+                                <div className="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 z-50 dark:bg-slate-800 dark:border-slate-700">
+                                    <div className="p-4">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">Filtrar por Grupo</h3>
+                                            <button
+                                                onClick={() => {
+                                                    if (selectedGroups.length === USER_GROUPS.length) {
+                                                        setSelectedGroups([]);
+                                                    } else {
+                                                        setSelectedGroups(USER_GROUPS);
+                                                    }
+                                                }}
+                                                className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                                            >
+                                                {selectedGroups.length === USER_GROUPS.length ? 'Desmarcar Todos' : 'Marcar Todos'}
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                                            {USER_GROUPS.map((group) => (
+                                                <label
+                                                    key={group}
+                                                    className="flex items-center p-2 rounded hover:bg-slate-50 cursor-pointer dark:hover:bg-slate-700"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedGroups.includes(group)}
+                                                        onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setSelectedGroups([...selectedGroups, group]);
+                                                            } else {
+                                                                setSelectedGroups(selectedGroups.filter(g => g !== group));
+                                                            }
+                                                        }}
+                                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700"
+                                                    />
+                                                    <span className="ml-3 text-sm text-gray-700 dark:text-slate-300">
+                                                        {group.replace('Controle ', '')}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        
+                        {/* Filtro de Data */}
+                        <div className="relative" ref={datePickerRef}>
                         <button
                             onClick={() => setShowDatePicker(!showDatePicker)}
                             className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-600"
@@ -315,6 +418,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                 </div>
                             </div>
                         )}
+                        </div>
                     </div>
                 </div>
                 
