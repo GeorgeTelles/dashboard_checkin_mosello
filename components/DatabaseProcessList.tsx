@@ -58,8 +58,8 @@ interface DatabaseProcessListProps {
     endDate: Date | null;
     onStartDateChange: (date: Date) => void;
     onEndDateChange: (date: Date) => void;
-    selectedGroups: string[];
-    onSelectedGroupsChange: (groups: string[]) => void;
+    selectedGroups?: string[];
+    onSelectedGroupsChange?: (groups: string[]) => void;
 }
 
 // Grupos de usuário disponíveis
@@ -78,15 +78,21 @@ const GROUP_MAPPING: { [key: string]: string } = {
     'Controle Cível Select': 'Controle Cível'
 };
 
-const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({ 
-    audiences = [], 
-    startDate, 
-    endDate, 
-    onStartDateChange, 
-    onEndDateChange,
-    selectedGroups = USER_GROUPS, // Valor padrão
-    onSelectedGroupsChange
-}) => {
+const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
+    const {
+        audiences = [],
+        startDate,
+        endDate,
+        onStartDateChange,
+        onEndDateChange,
+    } = props;
+    
+    // Garante que selectedGroups e onSelectedGroupsChange sempre existam
+    const selectedGroups = props.selectedGroups || USER_GROUPS;
+    const onSelectedGroupsChange = props.onSelectedGroupsChange || (() => {
+        console.warn('⚠️ onSelectedGroupsChange não foi fornecido');
+    });
+    
     // Log para debug
     console.log('🔍 DatabaseProcessList renderizado');
     console.log('  - selectedGroups:', selectedGroups);
