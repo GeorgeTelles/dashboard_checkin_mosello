@@ -68,6 +68,9 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
 
         // Filtra por grupo de usuário
         const filteredAudiences = audiences.filter((item: any) => {
+            // Se selectedGroups não está definido ou está vazio, mostra tudo
+            if (!selectedGroups || selectedGroups.length === 0) return true;
+            
             const groupId = item.grupousuarioid;
             if (!groupId) return true; // Se não tem grupo, mostra
             

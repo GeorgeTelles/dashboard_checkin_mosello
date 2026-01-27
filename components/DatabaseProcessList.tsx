@@ -189,6 +189,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
         
         // Filtra por grupo de usuário antes de formatar
         const filteredAudiences = audiences.filter((item: any) => {
+            // Se selectedGroups não está definido ou está vazio, mostra tudo
+            if (!selectedGroups || selectedGroups.length === 0) return true;
+            
             const groupId = item.grupousuarioid;
             if (!groupId) return true; // Se não tem grupo, mostra
             
@@ -276,7 +279,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
                                 <span className="ml-2">
-                                    {selectedGroups.length === USER_GROUPS.length 
+                                    {!selectedGroups || selectedGroups.length === 0
+                                        ? 'Nenhum Grupo'
+                                        : selectedGroups.length === USER_GROUPS.length 
                                         ? 'Todos os Grupos' 
                                         : selectedGroups.length === 1 
                                         ? selectedGroups[0].replace('Controle ', '')
@@ -292,7 +297,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                             <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">Filtrar por Grupo</h3>
                                             <button
                                                 onClick={() => {
-                                                    if (selectedGroups.length === USER_GROUPS.length) {
+                                                    if (!selectedGroups || selectedGroups.length === USER_GROUPS.length) {
                                                         onSelectedGroupsChange([]);
                                                     } else {
                                                         onSelectedGroupsChange(USER_GROUPS);
@@ -300,7 +305,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                                 }}
                                                 className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
                                             >
-                                                {selectedGroups.length === USER_GROUPS.length ? 'Desmarcar Todos' : 'Marcar Todos'}
+                                                {!selectedGroups || selectedGroups.length === USER_GROUPS.length ? 'Desmarcar Todos' : 'Marcar Todos'}
                                             </button>
                                         </div>
                                         
@@ -312,8 +317,12 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                                 >
                                                     <input
                                                         type="checkbox"
-                                                        checked={selectedGroups.includes(group)}
+                                                        checked={selectedGroups ? selectedGroups.includes(group) : false}
                                                         onChange={(e) => {
+                                                            if (!selectedGroups) {
+                                                                onSelectedGroupsChange([group]);
+                                                                return;
+                                                            }
                                                             if (e.target.checked) {
                                                                 onSelectedGroupsChange([...selectedGroups, group]);
                                                             } else {

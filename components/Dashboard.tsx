@@ -5,8 +5,18 @@ import WeeklyStatusChart from './WeeklyStatusChart';
 import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
-import DatabaseProcessList, { USER_GROUPS } from './DatabaseProcessList';
+import DatabaseProcessList from './DatabaseProcessList';
 import { Audience } from '../types';
+
+// Grupos de usuário disponíveis
+const USER_GROUPS = [
+    'Controle Contencioso Imobiliário/Agrário',
+    'Controle Cível',
+    'Controle Criminal',
+    'Controle Tributário e Empresarial',
+    'Controle Trabalhista',
+    'Controle Contencioso Ambiental'
+];
 
 const Dashboard = () => {
     const [audiences, setAudiences] = useState<Audience[]>([]);
