@@ -90,6 +90,8 @@ const Dashboard = () => {
     // Nos próximos passos, passaremos esses dados para os componentes filhos
     console.log('Dados recebidos da API:', audiences);
     console.log('🔍 selectedGroups no Dashboard:', selectedGroups);
+    console.log('🔍 handleSelectedGroupsChange no Dashboard:', handleSelectedGroupsChange);
+    console.log('🔍 handleSelectedGroupsChange tipo:', typeof handleSelectedGroupsChange);
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">

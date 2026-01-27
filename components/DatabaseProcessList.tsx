@@ -79,6 +79,11 @@ const GROUP_MAPPING: { [key: string]: string } = {
 };
 
 const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
+    // Log COMPLETO das props recebidas
+    console.log('🔍 DatabaseProcessList - TODAS AS PROPS:', props);
+    console.log('🔍 DatabaseProcessList - props.onSelectedGroupsChange:', props.onSelectedGroupsChange);
+    console.log('🔍 DatabaseProcessList - typeof props.onSelectedGroupsChange:', typeof props.onSelectedGroupsChange);
+    
     const {
         audiences = [],
         startDate,
