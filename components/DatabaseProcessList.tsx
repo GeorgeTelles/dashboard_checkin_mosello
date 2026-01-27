@@ -58,10 +58,12 @@ interface DatabaseProcessListProps {
     endDate: Date | null;
     onStartDateChange: (date: Date) => void;
     onEndDateChange: (date: Date) => void;
+    selectedGroups: string[];
+    onSelectedGroupsChange: (groups: string[]) => void;
 }
 
 // Grupos de usuário disponíveis
-const USER_GROUPS = [
+export const USER_GROUPS = [
     'Controle Contencioso Imobiliário/Agrário',
     'Controle Cível',
     'Controle Criminal',
@@ -81,7 +83,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     startDate, 
     endDate, 
     onStartDateChange, 
-    onEndDateChange 
+    onEndDateChange,
+    selectedGroups,
+    onSelectedGroupsChange
 }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
@@ -89,7 +93,6 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     const datePickerRef = React.useRef<HTMLDivElement>(null);
     
     // Estados para o filtro de grupo de usuário
-    const [selectedGroups, setSelectedGroups] = useState<string[]>(USER_GROUPS);
     const [showGroupFilter, setShowGroupFilter] = React.useState(false);
     const groupFilterRef = React.useRef<HTMLDivElement>(null);
 
@@ -290,9 +293,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                             <button
                                                 onClick={() => {
                                                     if (selectedGroups.length === USER_GROUPS.length) {
-                                                        setSelectedGroups([]);
+                                                        onSelectedGroupsChange([]);
                                                     } else {
-                                                        setSelectedGroups(USER_GROUPS);
+                                                        onSelectedGroupsChange(USER_GROUPS);
                                                     }
                                                 }}
                                                 className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"
@@ -312,9 +315,9 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                                         checked={selectedGroups.includes(group)}
                                                         onChange={(e) => {
                                                             if (e.target.checked) {
-                                                                setSelectedGroups([...selectedGroups, group]);
+                                                                onSelectedGroupsChange([...selectedGroups, group]);
                                                             } else {
-                                                                setSelectedGroups(selectedGroups.filter(g => g !== group));
+                                                                onSelectedGroupsChange(selectedGroups.filter(g => g !== group));
                                                             }
                                                         }}
                                                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700"

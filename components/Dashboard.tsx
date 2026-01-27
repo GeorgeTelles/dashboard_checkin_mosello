@@ -5,7 +5,7 @@ import WeeklyStatusChart from './WeeklyStatusChart';
 import AudienceEvolutionChart from './AudienceEvolutionChart';
 import AudienceSummary from './AudienceSummary';
 import HappeningNow from './HappeningNow';
-import DatabaseProcessList from './DatabaseProcessList';
+import DatabaseProcessList, { USER_GROUPS } from './DatabaseProcessList';
 import { Audience } from '../types';
 
 const Dashboard = () => {
@@ -13,6 +13,7 @@ const Dashboard = () => {
     const [error, setError] = useState<string | null>(null);
     const [startDate, setStartDate] = useState<Date>(new Date()); // Padrão: hoje
     const [endDate, setEndDate] = useState<Date>(new Date()); // Padrão: hoje
+    const [selectedGroups, setSelectedGroups] = useState<string[]>(USER_GROUPS); // Todos selecionados por padrão
 
     useEffect(() => {
         const fetchAudiences = async () => {
@@ -72,6 +73,7 @@ const Dashboard = () => {
                 endDate={endDate}
                 onStartDateChange={setStartDate}
                 onEndDateChange={setEndDate}
+                selectedGroups={selectedGroups}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -85,7 +87,15 @@ const Dashboard = () => {
 
             <AudienceSummary audiences={audiences} />
             <HappeningNow />
-            <DatabaseProcessList audiences={audiences} />
+            <DatabaseProcessList 
+                audiences={audiences} 
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={setStartDate}
+                onEndDateChange={setEndDate}
+                selectedGroups={selectedGroups}
+                onSelectedGroupsChange={setSelectedGroups}
+            />
         </div>
     );
 };

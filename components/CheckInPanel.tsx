@@ -36,12 +36,19 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, iconBgC
     );
 };
 
+// Mapeamento de grupos que devem ser consolidados
+const GROUP_MAPPING: { [key: string]: string } = {
+    'Controle Cível - PF': 'Controle Cível',
+    'Controle Cível Select': 'Controle Cível'
+};
+
 interface CheckInPanelProps {
     audiences: any[];
     startDate: Date;
     endDate: Date;
     onStartDateChange: (date: Date) => void;
     onEndDateChange: (date: Date) => void;
+    selectedGroups: string[];
 }
 
 const CheckInPanel: React.FC<CheckInPanelProps> = ({ 
@@ -49,39 +56,50 @@ const CheckInPanel: React.FC<CheckInPanelProps> = ({
     startDate, 
     endDate,
     onStartDateChange,
-    onEndDateChange
+    onEndDateChange,
+    selectedGroups
 }) => {
     
-    // Calcula as métricas dinamicamente baseado nos dados do BD
+    // Calcula as métricas dinamicamente baseado nos dados do BD e filtro de grupo
     const checkInStats = useMemo(() => {
         if (!audiences || audiences.length === 0) {
             return { done: 0, pending: 0, late: 0, confirmationRate: 0 };
         }
 
+        // Filtra por grupo de usuário
+        const filteredAudiences = audiences.filter((item: any) => {
+            const groupId = item.grupousuarioid;
+            if (!groupId) return true; // Se não tem grupo, mostra
+            
+            // Normaliza o nome do grupo usando o mapeamento
+            const normalizedGroup = GROUP_MAPPING[groupId] || groupId;
+            return selectedGroups.includes(normalizedGroup);
+        });
+
         // Check-in Feito = status "CONFIRMADO"
-        const done = audiences.filter(item => {
+        const done = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'CONFIRMADO' || status === 'FEITO' || status === 'REALIZADO';
         }).length;
 
         // Check-in A Confirmar = status "A CONFIRMAR" ou "ENVIADO"
-        const pending = audiences.filter(item => {
+        const pending = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'A CONFIRMAR' || status === 'ENVIADO';
         }).length;
 
         // Check-in Não Realizado = status "NÃO REALIZADO"
-        const late = audiences.filter(item => {
+        const late = filteredAudiences.filter(item => {
             const status = (item['status_checkin'] || '').toUpperCase();
             return status === 'NÃO REALIZADO';
         }).length;
 
         // Taxa de confirmação
-        const total = audiences.length;
+        const total = filteredAudiences.length;
         const confirmationRate = total > 0 ? Math.round((done / total) * 100 * 10) / 10 : 0;
 
         return { done, pending, late, confirmationRate };
-    }, [audiences]);
+    }, [audiences, selectedGroups]);
 
     return (
         <div>
