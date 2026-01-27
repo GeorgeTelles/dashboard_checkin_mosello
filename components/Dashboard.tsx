@@ -28,6 +28,11 @@ const Dashboard = () => {
         console.log('🔧 Inicializando selectedGroups com:', USER_GROUPS);
         return [...USER_GROUPS];
     });
+    
+    // Log quando selectedGroups mudar
+    useEffect(() => {
+        console.log('🔄 selectedGroups mudou para:', selectedGroups);
+    }, [selectedGroups]);
 
     useEffect(() => {
         const fetchAudiences = async () => {

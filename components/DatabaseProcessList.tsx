@@ -85,7 +85,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     onStartDateChange, 
     onEndDateChange,
     selectedGroups = USER_GROUPS, // Valor padrão
-    onSelectedGroupsChange = () => {} // Função padrão vazia
+    onSelectedGroupsChange
 }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
@@ -297,9 +297,16 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                             <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300">Filtrar por Grupo</h3>
                                             <button
                                                 onClick={() => {
+                                                    console.log('🔘 Botão Marcar/Desmarcar clicado');
+                                                    console.log('selectedGroups atual:', selectedGroups);
+                                                    console.log('USER_GROUPS.length:', USER_GROUPS.length);
+                                                    console.log('onSelectedGroupsChange:', typeof onSelectedGroupsChange);
+                                                    
                                                     if (!selectedGroups || selectedGroups.length === USER_GROUPS.length) {
+                                                        console.log('➡️ Desmarcando todos');
                                                         onSelectedGroupsChange([]);
                                                     } else {
+                                                        console.log('➡️ Marcando todos');
                                                         onSelectedGroupsChange(USER_GROUPS);
                                                     }
                                                 }}
@@ -319,14 +326,21 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
                                                         type="checkbox"
                                                         checked={selectedGroups ? selectedGroups.includes(group) : false}
                                                         onChange={(e) => {
+                                                            console.log('✅ Checkbox clicado:', group, 'checked:', e.target.checked);
+                                                            console.log('selectedGroups antes:', selectedGroups);
+                                                            
                                                             if (!selectedGroups) {
                                                                 onSelectedGroupsChange([group]);
                                                                 return;
                                                             }
                                                             if (e.target.checked) {
-                                                                onSelectedGroupsChange([...selectedGroups, group]);
+                                                                const newGroups = [...selectedGroups, group];
+                                                                console.log('➡️ Adicionando grupo. Novo array:', newGroups);
+                                                                onSelectedGroupsChange(newGroups);
                                                             } else {
-                                                                onSelectedGroupsChange(selectedGroups.filter(g => g !== group));
+                                                                const newGroups = selectedGroups.filter(g => g !== group);
+                                                                console.log('➡️ Removendo grupo. Novo array:', newGroups);
+                                                                onSelectedGroupsChange(newGroups);
                                                             }
                                                         }}
                                                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700"
