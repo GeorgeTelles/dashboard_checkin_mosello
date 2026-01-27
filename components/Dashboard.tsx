@@ -23,7 +23,11 @@ const Dashboard = () => {
     const [error, setError] = useState<string | null>(null);
     const [startDate, setStartDate] = useState<Date>(new Date()); // Padrão: hoje
     const [endDate, setEndDate] = useState<Date>(new Date()); // Padrão: hoje
-    const [selectedGroups, setSelectedGroups] = useState<string[]>(USER_GROUPS); // Todos selecionados por padrão
+    const [selectedGroups, setSelectedGroups] = useState<string[]>(() => {
+        // Inicializa com todos os grupos selecionados
+        console.log('🔧 Inicializando selectedGroups com:', USER_GROUPS);
+        return [...USER_GROUPS];
+    });
 
     useEffect(() => {
         const fetchAudiences = async () => {
@@ -74,6 +78,7 @@ const Dashboard = () => {
     // Por enquanto, vamos apenas logar os dados para confirmar que a conexão funcionou
     // Nos próximos passos, passaremos esses dados para os componentes filhos
     console.log('Dados recebidos da API:', audiences);
+    console.log('🔍 selectedGroups no Dashboard:', selectedGroups);
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">

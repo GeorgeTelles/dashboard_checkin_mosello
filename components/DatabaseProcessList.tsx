@@ -84,8 +84,8 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = ({
     endDate, 
     onStartDateChange, 
     onEndDateChange,
-    selectedGroups,
-    onSelectedGroupsChange
+    selectedGroups = USER_GROUPS, // Valor padrão
+    onSelectedGroupsChange = () => {} // Função padrão vazia
 }) => {
     const [isReminderModalOpen, setIsReminderModalOpen] = React.useState(false);
     const [processList, setProcessList] = useState<Process[]>([]);
