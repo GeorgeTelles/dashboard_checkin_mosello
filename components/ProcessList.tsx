@@ -50,7 +50,14 @@ const ProcessList = () => {
                         {processList.map((processItem) => (
                             <div key={processItem.id} className="bg-white p-4 rounded-lg border border-slate-200 space-y-4 dark:bg-slate-700/50 dark:border-slate-700">
                                 <div className="flex justify-between items-start">
-                                    <span className="font-medium text-gray-900 text-sm break-all pr-2 dark:text-slate-100">{processItem.processNumber}</span>
+                                    <div className="flex-1 pr-2">
+                                        <span className="font-medium text-gray-900 text-sm break-all dark:text-slate-100">{processItem.processNumber}</span>
+                                        {processItem.subject && (
+                                            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 truncate">
+                                                {processItem.subject}
+                                            </p>
+                                        )}
+                                    </div>
                                     <StatusBadge status={processItem.checkInStatus} />
                                 </div>
                                 
@@ -96,7 +103,16 @@ const ProcessList = () => {
                             <tbody>
                                 {processList.map((processItem) => (
                                     <tr key={processItem.id} className="bg-white border-b hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-600">
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{processItem.processNumber}</td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            <div>
+                                                <div className="whitespace-nowrap">{processItem.processNumber}</div>
+                                                {processItem.subject && (
+                                                    <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                                                        {processItem.subject}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4">{processItem.hearingDate}</td>
                                         <td className="px-6 py-4">{processItem.hearingTime}</td>
                                         <td className="px-6 py-4">

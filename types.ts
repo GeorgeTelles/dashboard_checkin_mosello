@@ -25,6 +25,7 @@ export interface Hearing {
 export interface Process {
   id: string;
   processNumber: string;
+  subject?: string;
   hearingDate: string;
   hearingTime: string;
   location?: string;
@@ -38,6 +39,7 @@ export interface Process {
 export interface Audience {
   id: string;
   'processo.pasta': string;
+  assunto?: string;
   data: string;
   hora: string;
   'encarregado.nome': string;

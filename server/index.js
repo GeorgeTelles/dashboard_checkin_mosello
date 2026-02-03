@@ -34,7 +34,8 @@ app.get('/audiencias', async (req, res) => {
       query = `
         SELECT 
           *,
-          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero
+          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero,
+          SPLIT_PART("processo.pasta", ' - ', 2) as assunto
         FROM audiencias_check
         WHERE "processo.pasta" IS NOT NULL
           AND to_date("data", 'DD/MM/YYYY') >= $1
@@ -47,7 +48,8 @@ app.get('/audiencias', async (req, res) => {
       query = `
         SELECT 
           *,
-          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero
+          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero,
+          SPLIT_PART("processo.pasta", ' - ', 2) as assunto
         FROM audiencias_check
         WHERE "processo.pasta" IS NOT NULL
           AND to_date("data", 'DD/MM/YYYY') = $1
@@ -59,7 +61,8 @@ app.get('/audiencias', async (req, res) => {
       query = `
         SELECT 
           *,
-          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero
+          SPLIT_PART("processo.pasta", ' - ', 1) as processo_numero,
+          SPLIT_PART("processo.pasta", ' - ', 2) as assunto
         FROM audiencias_check
         WHERE "processo.pasta" IS NOT NULL
         ORDER BY to_date("data", 'DD/MM/YYYY') DESC, "hora" DESC;
