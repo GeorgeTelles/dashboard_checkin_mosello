@@ -269,7 +269,7 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                         confirmationTime: confirmationTime,
                         checkOutStatus: checkOutStatus,
                         checkOutTime: checkOutTime,
-                        location: item['processo.faseatual.vara']
+                        location: item['local']
                     };
                 }).filter((p: Process) => p.id);
         
