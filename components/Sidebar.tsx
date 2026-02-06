@@ -39,14 +39,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, currentPage, setCu
 
     return (
         <>
-            <div className={`fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} dark:bg-slate-800 dark:border-slate-700`}>
-                <div className="flex items-center justify-start h-16 px-6 border-b border-slate-200 dark:border-slate-700">
+            <div className={`fixed top-0 left-0 z-30 w-64 bg-white border-r border-b border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} dark:bg-slate-800 dark:border-slate-700`}>
+                <div className="flex items-center justify-start h-16 px-6">
                     <div className="flex items-center gap-2">
                         <LogoIcon />
                         <span className="text-lg font-semibold text-gray-800 dark:text-slate-200">Mosello Advocacia</span>
                     </div>
                 </div>
-
             </div>
             {/* Backdrop for mobile */}
             {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-20 md:hidden" onClick={() => setIsOpen(false)}></div>}

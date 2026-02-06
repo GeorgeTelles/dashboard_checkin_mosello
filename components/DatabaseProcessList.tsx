@@ -312,27 +312,52 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                                     'Hora Checkout': p.checkOutTime || ''
                                 }));
                                 
-                                // Converte para CSV
+                                // Cria HTML table para Excel
                                 const headers = Object.keys(dataToExport[0] || {});
-                                const csvContent = [
-                                    headers.join(','),
-                                    ...dataToExport.map(row => 
-                                        headers.map(header => {
-                                            const value = row[header as keyof typeof row];
-                                            // Escapa valores que contêm vírgula ou aspas
-                                            return typeof value === 'string' && (value.includes(',') || value.includes('"'))
-                                                ? `"${value.replace(/"/g, '""')}"`
-                                                : value;
-                                        }).join(',')
-                                    )
-                                ].join('\n');
+                                const htmlTable = `
+                                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                                    <head>
+                                        <meta charset="utf-8">
+                                        <!--[if gte mso 9]>
+                                        <xml>
+                                            <x:ExcelWorkbook>
+                                                <x:ExcelWorksheets>
+                                                    <x:ExcelWorksheet>
+                                                        <x:Name>Audiências</x:Name>
+                                                        <x:WorksheetOptions>
+                                                            <x:DisplayGridlines/>
+                                                        </x:WorksheetOptions>
+                                                    </x:ExcelWorksheet>
+                                                </x:ExcelWorksheets>
+                                            </x:ExcelWorkbook>
+                                        </xml>
+                                        <![endif]-->
+                                    </head>
+                                    <body>
+                                        <table border="1">
+                                            <thead>
+                                                <tr>
+                                                    ${headers.map(h => `<th style="background-color: #4472C4; color: white; font-weight: bold; padding: 8px;">${h}</th>`).join('')}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${dataToExport.map(row => `
+                                                    <tr>
+                                                        ${headers.map(header => `<td style="padding: 5px;">${row[header as keyof typeof row]}</td>`).join('')}
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </body>
+                                    </html>
+                                `;
                                 
-                                // Cria o arquivo e faz o download
-                                const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                                // Cria o arquivo Excel e faz o download
+                                const blob = new Blob([htmlTable], { type: 'application/vnd.ms-excel' });
                                 const link = document.createElement('a');
                                 const url = URL.createObjectURL(blob);
                                 link.setAttribute('href', url);
-                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.csv`);
+                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.xls`);
                                 link.style.visibility = 'hidden';
                                 document.body.appendChild(link);
                                 link.click();
