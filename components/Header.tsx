@@ -1,6 +1,11 @@
 
 import React from 'react';
 import UserDropdown from './UserDropdown';
+import logoImg from '../logo.png';
+
+const LogoIcon = () => (
+    <img src={logoImg} alt="Mosello Advocacia" className="w-10 h-10 object-contain" />
+);
 
 const SearchIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,10 +38,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, theme, setTheme, onLogout 
 
     return (
         <header className="flex items-center justify-between h-16 px-4 md:px-6 bg-white border-b border-slate-200 flex-shrink-0 dark:bg-slate-800 dark:border-slate-700">
-            <div className="flex items-center">
-                 <button onClick={onMenuClick} className="text-gray-500 focus:outline-none md:hidden dark:text-gray-400">
-                    <MenuIcon />
-                 </button>
+            <div className="flex items-center gap-3">
+                <LogoIcon />
+                <span className="text-lg font-semibold text-gray-800 dark:text-slate-200">Mosello Advocacia</span>
             </div>
             <div className="flex items-center space-x-3 md:space-x-6">
                 {/* Aba de busca - comentada */}

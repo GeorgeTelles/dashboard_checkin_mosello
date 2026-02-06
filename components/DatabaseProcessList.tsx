@@ -353,11 +353,11 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                                 `;
                                 
                                 // Cria o arquivo Excel e faz o download
-                                const blob = new Blob([htmlTable], { type: 'application/vnd.ms-excel' });
+                                const blob = new Blob([htmlTable], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
                                 const link = document.createElement('a');
                                 const url = URL.createObjectURL(blob);
                                 link.setAttribute('href', url);
-                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.xls`);
+                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.xlsx`);
                                 link.style.visibility = 'hidden';
                                 document.body.appendChild(link);
                                 link.click();
