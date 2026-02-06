@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CheckInStatus, type Process } from '../types';
 import ReminderModal from './ReminderModal';
 import { lawyers } from '../data/mockData'; // Using mock lawyers for now
+import * as XLSX from 'xlsx';
 
 const StatusBadge: React.FC<{ status: CheckInStatus | string; time?: string | null }> = ({ status, time }) => {
     
@@ -298,6 +299,11 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                         {/* Botão de Download Excel */}
                         <button
                             onClick={() => {
+                                if (processList.length === 0) {
+                                    alert('Não há dados para exportar');
+                                    return;
+                                }
+                                
                                 // Prepara os dados para exportação
                                 const dataToExport = processList.map(p => ({
                                     'Processo': p.processNumber,
@@ -312,56 +318,30 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                                     'Hora Checkout': p.checkOutTime || ''
                                 }));
                                 
-                                // Cria HTML table para Excel
-                                const headers = Object.keys(dataToExport[0] || {});
-                                const htmlTable = `
-                                    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-                                    <head>
-                                        <meta charset="utf-8">
-                                        <!--[if gte mso 9]>
-                                        <xml>
-                                            <x:ExcelWorkbook>
-                                                <x:ExcelWorksheets>
-                                                    <x:ExcelWorksheet>
-                                                        <x:Name>Audiências</x:Name>
-                                                        <x:WorksheetOptions>
-                                                            <x:DisplayGridlines/>
-                                                        </x:WorksheetOptions>
-                                                    </x:ExcelWorksheet>
-                                                </x:ExcelWorksheets>
-                                            </x:ExcelWorkbook>
-                                        </xml>
-                                        <![endif]-->
-                                    </head>
-                                    <body>
-                                        <table border="1">
-                                            <thead>
-                                                <tr>
-                                                    ${headers.map(h => `<th style="background-color: #4472C4; color: white; font-weight: bold; padding: 8px;">${h}</th>`).join('')}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                ${dataToExport.map(row => `
-                                                    <tr>
-                                                        ${headers.map(header => `<td style="padding: 5px;">${row[header as keyof typeof row]}</td>`).join('')}
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    </body>
-                                    </html>
-                                `;
+                                // Cria a planilha
+                                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
                                 
-                                // Cria o arquivo Excel e faz o download
-                                const blob = new Blob([htmlTable], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                                const link = document.createElement('a');
-                                const url = URL.createObjectURL(blob);
-                                link.setAttribute('href', url);
-                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.xlsx`);
-                                link.style.visibility = 'hidden';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
+                                // Define largura das colunas
+                                const columnWidths = [
+                                    { wch: 20 }, // Processo
+                                    { wch: 40 }, // Assunto
+                                    { wch: 18 }, // Data da Audiência
+                                    { wch: 18 }, // Hora da Audiência
+                                    { wch: 30 }, // Local
+                                    { wch: 25 }, // Encarregado Principal
+                                    { wch: 15 }, // Status Checkin
+                                    { wch: 15 }, // Hora Checkin
+                                    { wch: 15 }, // Status Checkout
+                                    { wch: 15 }  // Hora Checkout
+                                ];
+                                worksheet['!cols'] = columnWidths;
+                                
+                                // Cria o workbook
+                                const workbook = XLSX.utils.book_new();
+                                XLSX.utils.book_append_sheet(workbook, worksheet, 'Audiências');
+                                
+                                // Gera o arquivo e faz o download
+                                XLSX.writeFile(workbook, `audiencias_${new Date().toISOString().split('T')[0]}.xlsx`);
                             }}
                             className="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
                         >
