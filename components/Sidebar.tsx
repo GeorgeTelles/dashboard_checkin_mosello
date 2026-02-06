@@ -46,32 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, currentPage, setCu
                         <span className="text-lg font-semibold text-gray-800 dark:text-slate-200">Mosello Advocacia</span>
                     </div>
                 </div>
-                <div className="flex-1 flex flex-col overflow-y-auto">
-                    <nav className="flex-1 px-4 py-4 space-y-2">
-                        {/* <a 
-                            href="#" 
-                            onClick={(e) => { 
-                                e.preventDefault(); 
-                                handleNavClick('dashboard');
-                            }} 
-                            className={`${navLinkClasses} ${currentPage === 'dashboard' ? activeClasses : inactiveClasses}`}
-                        >
-                            <DashboardIcon />
-                            <span className="ml-3">Dashboard</span>
-                        </a> */}
-                        <a 
-                            href="#" 
-                            onClick={(e) => { 
-                                e.preventDefault(); 
-                                handleNavClick('one-page');
-                            }} 
-                             className={`${navLinkClasses} ${currentPage === 'one-page' ? activeClasses : inactiveClasses}`}
-                        >
-                            <OnePageIcon />
-                            <span className="ml-3">One-Page</span>
-                        </a>
-                    </nav>
-                </div>
+
             </div>
             {/* Backdrop for mobile */}
             {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-20 md:hidden" onClick={() => setIsOpen(false)}></div>}

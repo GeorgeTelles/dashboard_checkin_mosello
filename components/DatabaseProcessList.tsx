@@ -290,11 +290,62 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
             <div className="bg-white p-4 md:p-6 rounded-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700 flex flex-col h-full">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Processos</h2>
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">Lista de Audiências</h2>
                         <p className="text-gray-500 mt-1 dark:text-slate-400">Audiências agendadas e status de checkin dos advogados</p>
                     </div>
-                    
+                    {/*  */}
                     <div className="flex gap-2">
+                        {/* Botão de Download Excel */}
+                        <button
+                            onClick={() => {
+                                // Prepara os dados para exportação
+                                const dataToExport = processList.map(p => ({
+                                    'Processo': p.processNumber,
+                                    'Assunto': p.subject || '',
+                                    'Data da Audiência': p.hearingDate,
+                                    'Hora da Audiência': p.hearingTime,
+                                    'Local': p.location || '',
+                                    'Encarregado Principal': p.mainLawyer.name,
+                                    'Status Checkin': p.checkInStatus,
+                                    'Hora Checkin': p.confirmationTime || '',
+                                    'Status Checkout': p.checkOutStatus,
+                                    'Hora Checkout': p.checkOutTime || ''
+                                }));
+                                
+                                // Converte para CSV
+                                const headers = Object.keys(dataToExport[0] || {});
+                                const csvContent = [
+                                    headers.join(','),
+                                    ...dataToExport.map(row => 
+                                        headers.map(header => {
+                                            const value = row[header as keyof typeof row];
+                                            // Escapa valores que contêm vírgula ou aspas
+                                            return typeof value === 'string' && (value.includes(',') || value.includes('"'))
+                                                ? `"${value.replace(/"/g, '""')}"`
+                                                : value;
+                                        }).join(',')
+                                    )
+                                ].join('\n');
+                                
+                                // Cria o arquivo e faz o download
+                                const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                                const link = document.createElement('a');
+                                const url = URL.createObjectURL(blob);
+                                link.setAttribute('href', url);
+                                link.setAttribute('download', `audiencias_${new Date().toISOString().split('T')[0]}.csv`);
+                                link.style.visibility = 'hidden';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }}
+                            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Excel
+                        </button>
+                        
                         {/* Filtro de Grupo de Usuário */}
                         <div className="relative" ref={groupFilterRef}>
                             <button
@@ -536,7 +587,6 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                                     <th scope="col" className="px-6 py-3">Encarregado Principal</th>
                                     <th scope="col" className="px-6 py-3">Status Checkin</th>
                                     <th scope="col" className="px-6 py-3">Status Checkout</th>
-                                    <th scope="col" className="px-6 py-3"><span className="sr-only">Ações</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -566,9 +616,6 @@ const DatabaseProcessList: React.FC<DatabaseProcessListProps> = (props) => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <StatusBadge status={processItem.checkOutStatus} time={processItem.checkOutTime} />
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <button><MoreIcon /></button>
                                         </td>
                                     </tr>
                                 ))}
