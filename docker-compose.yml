@@ -27,6 +27,7 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - MOSELLO_PG_ADMIN_PASSWORD=${MOSELLO_PG_ADMIN_PASSWORD}
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       # As variáveis abaixo são para o caso de você precisar sobrescrever os padrões no index.js
       # - PG_HOST=host.docker.internal
       # - PG_PORT=5433
